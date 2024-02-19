@@ -18,6 +18,14 @@ export default function _layout() {
             title: "Register"
 
         }} />
+        <Stack.Screen name="content/index/" options={{
+            title: "Register"
+
+        }} />
+        <Stack.Screen name="[id]" options={{
+            title: "Topic"
+
+        }} />
     </Stack>
   )
 }
