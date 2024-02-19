@@ -1,45 +1,112 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { StatusBar } from 'expo-status-bar'
-import { Dimensions } from 'react-native'
-import TopicList from '../components/TopicList'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import SearchBar from '../components/SearchBar'
-import { ScrollView } from 'react-native'
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 
-const height = Dimensions.get('window').height
-    const width = Dimensions.get('window').width
+import { Dimensions } from 'react-native';
 
+// Import your preferred UI library components (e.g., from React Native Paper)
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 
+const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
+  const handleLogin = () => {
+    // Validation and login logic here
+    alert(`Username: ${username}, Password: ${password}`); // Placeholder for now
+  };
 
-
-export default function HomePage() {
   return (
-   
-    <View className="" style={{backgroundColor : '#191919', height : height , width : width}}>
-<StatusBar style= "light" />
-    <SafeAreaView style={{backgroundColor : '#191919' , marginBottom : -30}}>
-     
-      
-      <View style={{marginVertical : 10}}>
-      <Text style={{color : 'white', fontSize : 20, textAlign : 'center', }}>Gündem</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+       <Image source={require('../assets/images/splash.png')} style={styles.logo} />
+      <Text style={styles.title}>Log In</Text>
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.textInput}
+          color="white"
+          placeholder="Username"
+          placeholderTextColor={'#e8e8e8'}
+          value={username}
+          onChangeText={setUsername}
+        />
+        <TextInput
+          style={styles.textInput}
+          placeholder="Password"
+          color="white"
+          placeholderTextColor={'#e8e8e8'}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
       </View>
-      </SafeAreaView>
+<View style={styles.button}>
+      <Button title="Log In" color="white" onPress={handleLogin}  />
+</View>
+      <Text style={styles.textLink}>Don't have an account? Register</Text>
+    </KeyboardAvoidingView>
+  );
+};
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#191919',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 20,
+    },
+    logo: {
+      width: 120,
+      height: 120,
+      resizeMode: 'contain',
+      marginBottom: 10,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginBottom: 20,
+      color: '#e8e8e8',
+    },
+    inputContainer: {
+      marginVertical: 10,
+      
+    },
+    textInput: {
+      backgroundColor: '#414142',
+      borderRadius: 5,
+      padding: 10,
+      marginBottom: 10,
+      width: width * 0.9,
+      height: height * 0.05,
+      
+    },
+    button: {
+      borderRadius: 5,
+      marginVertical: 10,
+      backgroundColor: '#80c04e',
+      width: width * 0.5,
       
       
-      
-      <ScrollView className=" justify-center items-center " >
-      
-      <SearchBar/>
-        <TopicList/>
-        
-      </ScrollView>
-      
-      
-      
-    </View>
-    
-    
-  )
-}
+    },
+    textLink: {
+      color: '#e8e8e8',
+      textDecorationLine: 'underline',
+      marginTop: 20,
+    },
+  });
+  
+
+export default Login;
