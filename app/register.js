@@ -9,10 +9,11 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import {  router } from 'expo-router'
 
 import { Dimensions } from 'react-native';
 
-// Import your preferred UI library components (e.g., from React Native Paper)
+
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
@@ -22,8 +23,8 @@ const Register = () => {
   const [email, setEmail] = useState('');
 
   const handleRegister = () => {
-    // Validation and registration logic here
-    // (e.g., check for empty fields, password strength, valid email)
+    // todo !!!! Validation and registration logic here
+    
     alert(`Username: ${username}, Password: ${password}, Email: ${email}`); // Placeholder for now
   };
 
@@ -32,7 +33,7 @@ const Register = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <Image source={require('../../assets/images/splash.png')} style={styles.logo} />
+      <Image source={require('../assets/images/splash.png')} style={styles.logo} />
       <Text style={styles.title}>Create Account</Text>
 
       <View style={styles.inputContainer}>
@@ -72,7 +73,7 @@ const Register = () => {
       />
       </View>
 
-      <Text style={styles.textLink}>Already have an account? Log in</Text>
+      <Text style={styles.textLink} onPress={() => router.replace('/login')}>Already have an account? Log in</Text>
     </KeyboardAvoidingView>
   );
 };

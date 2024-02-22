@@ -9,6 +9,9 @@ import { Bars3Icon, ChevronLeftIcon } from 'react-native-heroicons/outline'
 import { router, useRouter } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router'
 import ContentList from '../components/ContentList'
+import { useState } from 'react'
+import { useEffect } from 'react'
+import { getEntries } from '../api/api';
 
 height = Dimensions.get('window').height
 width = Dimensions.get('window').width
@@ -17,6 +20,9 @@ width = Dimensions.get('window').width
 
 export default function index() {
     const {id, name} = useLocalSearchParams();
+
+    
+
     
     
     
@@ -33,13 +39,13 @@ export default function index() {
     <StatusBar style= "light" />
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" , marginHorizontal : 8 , paddingBottom : 15}} >
       <TouchableOpacity  className="rounded-xl p-1 " style={{marginLeft : -8}}onPress={() => router.back() }>
-                <ChevronLeftIcon size="32" strokeWidth={2.5} color="#80c04e" />
+                <ChevronLeftIcon size="38" strokeWidth={2.5} color="#80c04e" />
             </TouchableOpacity>
-            <View style={{flex : 1, justifyContent : 'center', alignItems : 'center'}}>
-            <Text style={{color : 'white', fontSize : 20, textAlign : 'center', }}>{name.length > 74 ? name.substring(0,74) + "...": name}</Text>
+            <View style={{flex : 1, justifyContent : 'center', alignItems : 'center' }}>
+            <Text style={{color : 'white', fontSize : 20, textAlign : 'center', width : width * 0.8}}>{name.length > 74 ? name.substring(0,74) + "...": name}</Text>
             </View>
             <TouchableOpacity onPress={() => console.log("hello")}>
-                <Bars3Icon size= "34" strokeWidth = {2} color={"#80c04e"}  />
+                <Bars3Icon size= "38" strokeWidth = {2} color={"#80c04e"}  />
             </TouchableOpacity>
         </View>
 
@@ -47,13 +53,12 @@ export default function index() {
       
       
       
-      <ScrollView className=" justify-center items-center " >
-      <View>
-        <ContentList/>
-      </View>
+      
+        <ContentList id={id}/>
+      
       
         
-      </ScrollView>
+      
       
       
       

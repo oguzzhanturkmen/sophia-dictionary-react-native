@@ -4,7 +4,9 @@ import { Dimensions } from 'react-native';
 import { Link, router } from 'expo-router';
 import {UserCircleIcon} from 'react-native-heroicons/outline'
 import {HandThumbUpIcon, HandThumbDownIcon, ShareIcon} from 'react-native-heroicons/outline'
-
+import { getEntries } from '../api/api';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 
 const topics = [
@@ -24,7 +26,18 @@ const topics = [
 
   const height = Dimensions.get('window').height
     const width = Dimensions.get('window').width
-export default function ContentList() {
+export default function ContentList({id}) {
+
+  const [content, setContent] = useState([])
+
+    useEffect(() => {
+        getEntries(id).then((res) => {
+            setContent(res.content)
+            console.log(res.content)
+        })
+    }
+    , [])
+
   
 
     const renderItem = ({ item, index }) => (
@@ -36,14 +49,14 @@ export default function ContentList() {
           ]}
         >
           <View style={{ flex: 1}}> 
-        <Text style={styles.itemText}>{item.name}</Text>
+        <Text style={styles.itemText}>{item.entryContent}</Text>
         <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: 'center', paddingTop : 10 }}>
             <View style={{ flexDirection: "column", justifyContent: "flex-end", alignItems: "flex-end" }}>
                 <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: "center" }}>
-            <Text style={{ color: 'white', marginRight: 5 }}>19.02.2024 </Text>
-            <Text style={{ color: 'white', marginRight: 10 }}>13:08</Text>
+            <Text style={{ color: 'white', marginRight: 5 }}>{item.entryDate} </Text>
+            <Text style={{ color: 'white', marginRight: 10 }}>{item.entryTime}</Text>
             </View>
-            <Text style={{ color: 'white', marginRight : 10 , marginTop : 5, color :'#80c04e'   }}>username</Text>
+            <Text style={{ color: 'white', marginRight : 10 , marginTop : 5, color :'#80c04e'   }}>{item.entryOwner}</Text>
             </View>
             
             <UserCircleIcon size={42} strokeWidth={1} color="white" style={{marginRight : 10}}/>
@@ -51,11 +64,11 @@ export default function ContentList() {
         <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: "center", paddingTop : 5 , marginRight : 10 }}>
             <View style={{ flexDirection: "column", alignItems: "center" }}>
             <HandThumbUpIcon size={20} strokeWidth={1} color="white" style={{marginRight : 10}}/>
-            <Text style={{ color: 'white', marginRight: 10 , fontSize : 10, marginTop : 5}}>10</Text>
+            <Text style={{ color: 'white', marginRight: 10 , fontSize : 10, marginTop : 5}}>{item.likeCount}</Text>
             </View>
             <View style={{ flexDirection: "column", alignItems: "center" }}>
             <HandThumbDownIcon size={20} strokeWidth={1} color="white" style={{marginRight : 10}}/>
-            <Text style={{ color: 'white', marginRight: 10 , fontSize : 10 , marginTop : 5}}>10</Text>
+            <Text style={{ color: 'white', marginRight: 10 , fontSize : 10 , marginTop : 5}}>{item.dislikeCount}</Text>
             </View>
             <ShareIcon size={25} strokeWidth={1} color="white" style={{marginRight : 10}}/>
         </View>
@@ -71,7 +84,7 @@ export default function ContentList() {
     
       return (
         <FlatList
-          data={topics}
+          data={content}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />

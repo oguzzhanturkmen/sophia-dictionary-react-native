@@ -1,30 +1,36 @@
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Dimensions } from 'react-native';
 import { Link, router } from 'expo-router';
+import { getAllTopics } from '../api/api';
+import topic from '../app/topic';
 
-
-
-const topics = [
-    { id: '1', name: 'This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the', entries: 10 },
-    { id: '2', name: 'Topic 2', entries: 20 },
-    
-    
-  ];
 
   const height = Dimensions.get('window').height
-    const width = Dimensions.get('window').width
+  const width = Dimensions.get('window').width
 export default function TopicList() {
+  const [topics, setTopics] = React.useState([])
+
+  
+
+  useEffect(() => {
+    getAllTopics().then((res) => {
+      setTopics(res.content)
+      console.log(res.content)
+    })
+
+    
+  }, [])
   
 
     const renderItem = ({ item, index }) => (
        
         <TouchableOpacity
           onPress={() => router.push({
-            pathname: `${item.id}` ,
+            pathname: `${item.topicId}` ,
             params: {
-              name: item.name,
-              id : item.id,
+              name: item.topicName,
+              id : item.topicId,
             }
          })}
           style={[
@@ -33,8 +39,8 @@ export default function TopicList() {
           ]}
         >
             
-                <Text style={styles.itemText}>{item.name.length > 65 ? item.name.slice(0,65) + "..." : item.name}</Text>
-                <Text style={styles.counterText}>{item.entries}</Text>
+                <Text style={styles.itemText}>{item.topicName.length > 65 ? item.topicName.slice(0,65) + "..." : item.topicName}</Text>
+                <Text style={styles.counterText}>{item.entryCount}</Text>
             
           
         </TouchableOpacity>
@@ -47,7 +53,7 @@ export default function TopicList() {
         <FlatList
           data={topics}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.topicId}
         />
       );
     };
