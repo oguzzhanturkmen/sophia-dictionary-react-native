@@ -3,34 +3,23 @@ import React, { useEffect } from 'react'
 import { Dimensions } from 'react-native';
 import { Link, router } from 'expo-router';
 import { getAllTopics } from '../api/api';
-import topic from '../app/topic';
+
 
 
   const height = Dimensions.get('window').height
   const width = Dimensions.get('window').width
-export default function TopicList() {
-  const [topics, setTopics] = React.useState([])
-
+export default function TopicList({ data }) {
   
-
-  useEffect(() => {
-    getAllTopics().then((res) => {
-      setTopics(res.content)
-      console.log(res.content)
-    })
-
-    
-  }, [])
   
 
     const renderItem = ({ item, index }) => (
        
         <TouchableOpacity
           onPress={() => router.push({
-            pathname: `${item.topicId}` ,
+            pathname: `trending/${item.topicId}` ,
             params: {
               name: item.topicName,
-              id : item.topicId,
+              
             }
          })}
           style={[
@@ -51,7 +40,7 @@ export default function TopicList() {
     
       return (
         <FlatList
-          data={topics}
+          data={data}
           renderItem={renderItem}
           keyExtractor={item => item.topicId}
         />
