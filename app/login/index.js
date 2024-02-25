@@ -10,6 +10,8 @@ import {
   Platform,
 } from 'react-native';
 import {  router } from 'expo-router'
+import { authenticateUser } from '../../api/auth';
+
 
 import { Dimensions } from 'react-native';
 
@@ -20,18 +22,30 @@ const height = Dimensions.get('window').height;
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(true);
 
-  const handleLogin = () => {
-    
-    alert(`Username: ${username}, Password: ${password}`); 
-  };
+  const handleLogin = async () => {
+    const success = await authenticateUser(username, password);
+    if (success) {
+      console.log('Login successful');
+      // Assuming you have a way to navigate using expo-router or another navigation solution
+      router.push('/'); // Update this line to match your actual navigation logic
+      
+    } else {
+      console.log('Login failed');
+      setIsLoggingIn(false);
+      // Handle login failure (e.g., display an error message)
+    }
+  };  
+
+  
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-       <Image source={require('../assets/images/splash.png')} style={styles.logo} />
+       <Image source={require('../../assets/images/splash.png')} style={styles.logo} />
       <Text style={styles.title}>Log In</Text>
 
       <View style={styles.inputContainer}>
@@ -54,8 +68,10 @@ const Login = () => {
         />
       </View>
 <View style={styles.button}>
-      <Button title="Log In" color="white" onPress={handleLogin}  />
+      <Button title="Log In" color="white" onPress={() => handleLogin()}  />
+      
 </View>
+{isLoggingIn ? null : <Text style={{color: 'red'}}>Login failed</Text>}
       <Text style={styles.textLink} onPress={() => router.replace('/register')}>Don't have an account? Register</Text>
     </KeyboardAvoidingView>
   );

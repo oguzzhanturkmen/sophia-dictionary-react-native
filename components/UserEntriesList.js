@@ -9,36 +9,12 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 
 
-const topics = [
-    { id: '1', name: 'This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the', entries: 10 },
-    { id: '2', name: 'Topic 2', entries: 20 },
-    { id: '3', name: 'This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the', entries: 10 },
-    { id: '4', name: 'Topic 2', entries: 20 },
-    { id: '5', name: 'This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the', entries: 10 },
-    { id: '6', name: 'Topic 2', entries: 20 },
-    { id: '7', name: 'This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the', entries: 10 },
-    { id: '8', name: 'Topic 2', entries: 20 },
-    { id: '9', name: 'This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the', entries: 10 },
-    { id: '10', name: 'Topic 2', entries: 20 },
-    
-    
-  ];
 
   const height = Dimensions.get('window').height
     const width = Dimensions.get('window').width
-export default function ContentList({id}) {
+export default function UserEntries({entries}) {
 
-  const [content, setContent] = useState([])
-
-    useEffect(() => {
-        getEntries(id).then((res) => {
-            setContent(res.content)
-            console.log(res.content)
-            
-        })
-    }
-    , [])
-
+  
   
 
     const renderItem = ({ item, index }) => (
@@ -94,9 +70,9 @@ export default function ContentList({id}) {
     
       return (
         <FlatList
-          data={content}
+          data={entries}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.entryId}
         />
       );
     };

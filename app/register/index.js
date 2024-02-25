@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import {  router } from 'expo-router'
+import {authenticateUser, registerUser} from '../../api/auth'
 
 import { Dimensions } from 'react-native';
 
@@ -22,18 +23,24 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
-  const handleRegister = () => {
-    // todo !!!! Validation and registration logic here
-    
-    alert(`Username: ${username}, Password: ${password}, Email: ${email}`); // Placeholder for now
-  };
+  const handleRegister = async () => {
+    const success = await registerUser(username, password, email);
+    if (success) {
+      console.log('Registration successful');
+      await authenticateUser(username, password);
+      router.navigate('/'); // Update this line to match your actual navigation logic
+    } else {
+      console.log('Registration failed');
+      // Handle registration failure (e.g., display an error message)
+    }
+  }
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <Image source={require('../assets/images/splash.png')} style={styles.logo} />
+      <Image source={require('../../assets/images/splash.png')} style={styles.logo} />
       <Text style={styles.title}>Create Account</Text>
 
       <View style={styles.inputContainer}>

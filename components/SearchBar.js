@@ -18,7 +18,7 @@ export default function SearchBar() {
         <TextInput
           style={styles.textInputStyle}
           value={searchQuery}
-          placeholder="Başlık, #entry ya da @yazar"
+          placeholder="Topic, #entry or @user"
             placeholderTextColor="white"
           underlineColorAndroid="transparent"
           
@@ -31,6 +31,7 @@ export default function SearchBar() {
   const styles = StyleSheet.create({
     container: {
       backgroundColor: '#F5FCFF',
+      
 
     },
     
