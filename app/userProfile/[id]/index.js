@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dimensions } from "react-native";
-import { ArrowLeftIcon } from "react-native-heroicons/outline";
+import { ArrowLeftIcon, ChevronLeftIcon } from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -21,43 +21,31 @@ import {
 } from "react-native-heroicons/outline";
 import { useState } from "react";
 import ContentList from "../../../components/ContentList";
-import { Stack, Tabs } from "expo-router";
-import {
-  getUserDataForProfile,
-  getUserDataForOtherProfiles,
-} from "../../../api/api";
+import { Stack, Tabs, router } from "expo-router";
+import { getUserDataForOtherProfiles } from "../../../api/api";
 import { useLocalSearchParams } from "expo-router";
 import UserEntries from "../../../components/UserEntriesList";
-import { router } from "expo-router";
 
 const { width, height } = Dimensions.get("window");
 
 const Profile = () => {
+  const { id } = useLocalSearchParams();
   const navigation = useNavigation();
   const [userInformation, setUserInformation] = useState({});
-  const [allInformation, setAllInformation] = useState({});
 
   const [refresh, setRefresh] = useState(false);
   const [sectionSelected, setSectionSelected] = useState("topics");
 
-  // async fetchData methods
+  const selectSection = (section) => {
+    setSectionSelected(section);
+  };
+
   useEffect(() => {
-    getUserDataForProfile().then((res) => {
+    getUserDataForOtherProfiles(id).then((res) => {
       setUserInformation(res);
       console.log(res);
     });
   }, []);
-
-  useEffect(() => {
-    getUserDataForOtherProfiles(userInformation.userId).then((res) => {
-      setAllInformation(res);
-      console.log(res);
-    });
-  }, [userInformation]);
-
-  const selectSection = (section) => {
-    setSectionSelected(section);
-  };
 
   // Mock user data
   const userData = {
@@ -98,9 +86,9 @@ const Profile = () => {
             <TouchableOpacity
               className="rounded-xl p-1 "
               style={{ marginLeft: 8 }}
-              onPress={() => router.navigate("/createTopic")}
+              onPress={() => router.back()}
             >
-              <PlusCircleIcon size="38" strokeWidth={2.5} color="#80c04e" />
+              <ChevronLeftIcon size="38" strokeWidth={2.5} color="#80c04e" />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -123,12 +111,7 @@ const Profile = () => {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => setModalVisible(true)}
-              style={{ marginRight: 8 }}
-            >
-              <Cog8ToothIcon size="38" strokeWidth={2} color={"#80c04e"} />
-            </TouchableOpacity>
+            <View style={{ width: 38 }}></View>
           </View>
         </SafeAreaView>
 
@@ -190,66 +173,7 @@ const Profile = () => {
           <View style={styles.userInfo}>
             <Text style={styles.username}>{userInformation.username}</Text>
           </View>
-          <Text style={styles.bio}>{userInformation.bio}</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginHorizontal: 8,
-              paddingBottom: 5,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                color: "white",
-                backgroundColor: "gray",
-                padding: 6,
-                borderRadius: 9,
-                marginHorizontal: 15,
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 16,
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  color: "white",
-                }}
-              >
-                Edit Profile
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                color: "white",
-                backgroundColor: "gray",
-                padding: 6,
-                borderRadius: 9,
-                marginHorizontal: 15,
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 16,
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  color: "white",
-                }}
-              >
-                Share Profile
-              </Text>
-            </TouchableOpacity>
-          </View>
-
+          <Text style={styles.bio}>{userInformation?.bio}</Text>
           <View
             style={{
               backgroundColor: "#80c04e",
@@ -331,9 +255,7 @@ const Profile = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View>
-            <UserEntries entries={allInformation.entries} />
-          </View>
+          <UserEntries entries={userInformation.entries} />
         </View>
       </View>
     </View>
@@ -375,7 +297,7 @@ const styles = StyleSheet.create({
   },
   bio: {
     paddingHorizontal: 15,
-    paddingBottom: 20,
+    paddingBottom: 2,
     color: "white",
   },
   postsContainer: {

@@ -20,6 +20,11 @@ export default function _layout() {
             headerShown: false,
 
         }} />
+        <Stack.Screen name="followers" options={{
+            title: "Followers",
+            headerShown: false,
+
+        }} />
         
         
 
