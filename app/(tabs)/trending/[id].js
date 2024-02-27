@@ -39,7 +39,7 @@ export default function index() {
     <SafeAreaView style={{backgroundColor : '#191919' }} >
     <StatusBar style= "light" />
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" , marginHorizontal : 8 , paddingBottom : 15}} >
-      <TouchableOpacity  className="rounded-xl p-1 " style={{marginLeft : -8}}onPress={() => router.replace("/") }>
+      <TouchableOpacity  className="rounded-xl p-1 " style={{marginLeft : -8}}onPress={() => router.back("/") }>
                 <ChevronLeftIcon size="38" strokeWidth={2.5} color="#80c04e" />
             </TouchableOpacity>
             <TouchableOpacity style={{flex : 1, justifyContent : 'center', alignItems : 'center' }} onPress={refreshPage}>
