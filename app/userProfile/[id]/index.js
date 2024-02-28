@@ -22,9 +22,15 @@ import {
 import { useState } from "react";
 import ContentList from "../../../components/ContentList";
 import { Stack, Tabs, router } from "expo-router";
-import { getUserDataForOtherProfiles } from "../../../api/api";
+import {
+  getIsFollowed,
+  getUserDataForOtherProfiles,
+  getFollowUser,
+  getCreatedTopicsByUser,
+} from "../../../api/api";
 import { useLocalSearchParams } from "expo-router";
 import UserEntries from "../../../components/UserEntriesList";
+import TopicList from "../../../components/TopicList";
 
 const { width, height } = Dimensions.get("window");
 
@@ -34,10 +40,18 @@ const Profile = () => {
   const [userInformation, setUserInformation] = useState({});
 
   const [refresh, setRefresh] = useState(false);
-  const [sectionSelected, setSectionSelected] = useState("topics");
+  const [sectionSelected, setSectionSelected] = useState("entries");
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [topics, setTopics] = useState([]);
 
   const selectSection = (section) => {
     setSectionSelected(section);
+    if (section === "topics") {
+      getCreatedTopicsByUser(id).then((res) => {
+        setTopics(res);
+        console.log(res);
+      });
+    }
   };
 
   useEffect(() => {
@@ -45,7 +59,20 @@ const Profile = () => {
       setUserInformation(res);
       console.log(res);
     });
+    getIsFollowed(id).then((res) => {
+      setIsFollowed(res);
+      console.log(res);
+    });
   }, []);
+
+  const followUser = (id) => {
+    getFollowUser(id).then((res) => {
+      setIsFollowed(res);
+      getUserDataForOtherProfiles(id).then((res) => {
+        setUserInformation(res);
+      });
+    });
+  };
 
   // Mock user data
   const userData = {
@@ -148,7 +175,12 @@ const Profile = () => {
                   flexDirection: "column",
                   alignItems: "center",
                 }}
-                onPress={() => router.navigate("/userProfile/[id]/followers")}
+                onPress={() =>
+                  router.navigate({
+                    pathname: "/userProfile/[id]/followers",
+                    params: { id: id },
+                  })
+                }
               >
                 <Text style={{ color: "white" }}>
                   {userInformation.followerCount}
@@ -161,7 +193,12 @@ const Profile = () => {
                   flexDirection: "column",
                   alignItems: "center",
                 }}
-                onPress={() => router.navigate("/userProfile/[id]/following")}
+                onPress={() =>
+                  router.navigate({
+                    pathname: "/userProfile/[id]/following",
+                    params: { id: id },
+                  })
+                }
               >
                 <Text style={{ color: "white" }}>
                   {userInformation.followingCount}
@@ -173,7 +210,59 @@ const Profile = () => {
           <View style={styles.userInfo}>
             <Text style={styles.username}>{userInformation.username}</Text>
           </View>
-          <Text style={styles.bio}>{userInformation?.bio}</Text>
+          {userInformation.bio ? (
+            <Text style={styles.bio}>{userInformation.bio}</Text>
+          ) : (
+            <View />
+          )}
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-around" }}
+          >
+            <TouchableOpacity
+              style={{
+                backgroundColor: isFollowed ? "#414142" : "#80c04e",
+                height: 30,
+                width: width * 0.4,
+                borderRadius: 10,
+                justifyContent: "center",
+                alignSelf: "center",
+                marginVertical: 15,
+              }}
+              onPress={() => followUser(id)}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                }}
+              >
+                {isFollowed ? "Unfollow" : "Follow +"}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#414142",
+                height: 30,
+                width: width * 0.4,
+                borderRadius: 10,
+                justifyContent: "center",
+                alignSelf: "center",
+                marginVertical: 15,
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                }}
+              >
+                Message +
+              </Text>
+            </TouchableOpacity>
+          </View>
           <View
             style={{
               backgroundColor: "#80c04e",
@@ -195,32 +284,12 @@ const Profile = () => {
             }}
           >
             <TouchableOpacity
-              onPress={() => selectSection("topics")}
-              style={
-                sectionSelected === "topics"
-                  ? styles.selectedSection
-                  : styles.notSelectedSection
-              }
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 16,
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  color: "white",
-                }}
-              >
-                {"Topics"}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+              onPress={() => selectSection("entries")}
               style={
                 sectionSelected === "entries"
                   ? styles.selectedSection
                   : styles.notSelectedSection
               }
-              onPress={() => selectSection("entries")}
             >
               <Text
                 style={{
@@ -232,6 +301,26 @@ const Profile = () => {
                 }}
               >
                 {"Entries"}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={
+                sectionSelected === "topics"
+                  ? styles.selectedSection
+                  : styles.notSelectedSection
+              }
+              onPress={() => selectSection("topics")}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 16,
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                {"Topics"}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -255,7 +344,11 @@ const Profile = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <UserEntries entries={userInformation.entries} />
+          {sectionSelected === "entries" ? (
+            <UserEntries entries={userInformation.entries} />
+          ) : (
+            <TopicList data={topics} />
+          )}
         </View>
       </View>
     </View>

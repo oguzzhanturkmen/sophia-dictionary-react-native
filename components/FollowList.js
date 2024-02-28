@@ -1,47 +1,50 @@
 // FollowersScreen.js
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, Text, Image, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  FlatList,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { router } from "expo-router";
 
-// Mock data for demonstration purposes
-const followersData = [
-  {
-    id: '1',
-    username: 'user1',
-    bio: 'Loves coding and coffee',
-    imageUrl: 'https://example.com/user1.jpg',
-  },
-  {
-    id: '2',
-    username: 'user2',
-    bio: 'Travel, Music, and Coding',
-    imageUrl: 'https://example.com/user2.jpg',
-  },
-  // Add more followers as needed
-];
-
-const FollowerItem = ({ username, bio, imageUrl }) => (
-  <View style={styles.itemContainer}>
-    <Image source={{ uri: imageUrl }} style={styles.profileImage} />
+const FollowerItem = ({ username, bio, imageUrl, userId, entryCount }) => (
+  <TouchableOpacity
+    style={styles.itemContainer}
+    onPress={() =>
+      router.navigate({
+        pathname: `userProfile/${userId}`,
+        params: {
+          id: userId,
+        },
+      })
+    }
+  >
+    <Image
+      source={{ uri: imageUrl ? imageUrl : "" }}
+      style={styles.profileImage}
+    />
     <View style={styles.textContainer}>
       <Text style={styles.username}>{username}</Text>
       <Text style={styles.bio}>{bio}</Text>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
-const FollowList = () => {
-  // In a real app, you'd fetch this data from a server
-  const [followers, setFollowers] = useState(followersData);
-
+const FollowList = ({ data }) => {
   return (
     <FlatList
-      data={followers}
-      keyExtractor={item => item.id}
+      data={data}
+      keyExtractor={(item) => item.userId}
       renderItem={({ item }) => (
         <FollowerItem
           username={item.username}
           bio={item.bio}
-          imageUrl={item.imageUrl}
+          imageUrl={item.profileImage}
+          userId={item.userId}
+          entryCount={item.entryCount}
         />
       )}
     />
@@ -50,26 +53,30 @@ const FollowList = () => {
 
 const styles = StyleSheet.create({
   itemContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 10,
-    alignItems: 'center',
-    
+    alignItems: "center",
+    backgroundColor: "#1e1e1e",
   },
   profileImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
     marginRight: 10,
-    backgroundColor: 'grey',
+    backgroundColor: "grey",
+    marginHorizontal: 10,
   },
   textContainer: {
     flex: 1,
+    marginLeft: 15,
   },
   username: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 5,
   },
   bio: {
-    color: 'grey',
+    color: "grey",
   },
 });
 

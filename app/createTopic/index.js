@@ -1,60 +1,84 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, SafeAreaView } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { Dimensions } from 'react-native';
-import { TouchableOpacity } from 'react-native';
-import { Bars3Icon, ChevronLeftIcon } from 'react-native-heroicons/outline'
-import { router } from 'expo-router';
-import { postTopic} from '../../api/api'
+import React, { useState } from "react";
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Text,
+  SafeAreaView,
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { Dimensions } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { Bars3Icon, ChevronLeftIcon } from "react-native-heroicons/outline";
+import { router } from "expo-router";
+import { postTopic } from "../../api/api";
 
-const height = Dimensions.get('window').height
-const width = Dimensions.get('window').width
+const height = Dimensions.get("window").height;
+const width = Dimensions.get("window").width;
 
 const CreateTopic = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   handleSubmit = () => {
     data = {
-      topicName : title,
-      content : content
-    }
+      topicName: title,
+      content: content,
+    };
     postTopic(data).then((res) => {
-      console.log(res)
+      console.log(res);
       router.replace({
-        pathname: `${res.topicId}` ,
+        pathname: `trending/${res.topicId}`,
         params: {
           name: res.topicName,
-          id : res.topicId,
-        }
-     })
-    }
-    )
-
-  }
-
- 
+          id: res.topicId,
+        },
+      });
+    });
+  };
 
   return (
-    <View className="" style={{ flex : 1 , backgroundColor : '#191919'}}>
-    
-    <SafeAreaView style={{backgroundColor : '#191919' }} >
-    <StatusBar style= "light" />
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" , marginHorizontal : 8 , paddingBottom : 15}} >
-      <TouchableOpacity  className="rounded-xl p-1 " style={{marginLeft : -8}}onPress={() => router.back() }>
-                <ChevronLeftIcon size="38" strokeWidth={2.5} color="#80c04e" />
-            </TouchableOpacity>
-            <View style={{flex : 1, justifyContent : 'center', alignItems : 'center' }}>
-            <Text style={{color : 'white', fontSize : 26, textAlign : 'center', width : width * 0.8, fontWeight: "bold"}}>Post</Text>
-            </View>
-            <TouchableOpacity >
-                <Bars3Icon size= "38" strokeWidth = {2} color={"#80c04e"}  />
-            </TouchableOpacity>
+    <View className="" style={{ flex: 1, backgroundColor: "#191919" }}>
+      <SafeAreaView style={{ backgroundColor: "#191919" }}>
+        <StatusBar style="light" />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginHorizontal: 16,
+            paddingBottom: 15,
+          }}
+        >
+          <TouchableOpacity
+            className="rounded-xl p-1 "
+            style={{ marginLeft: -8 }}
+            onPress={() => router.back()}
+          >
+            <ChevronLeftIcon size="38" strokeWidth={2.5} color="#80c04e" />
+          </TouchableOpacity>
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontSize: 26,
+                textAlign: "center",
+                width: width * 0.8,
+                fontWeight: "bold",
+              }}
+            >
+              Post
+            </Text>
+          </View>
+          <TouchableOpacity>
+            <View style={{ width: 40 }} />
+          </TouchableOpacity>
         </View>
-
       </SafeAreaView>
       <View style={styles.container}>
-        
         <TextInput
           style={styles.title}
           placeholder="Title"
@@ -64,24 +88,28 @@ const CreateTopic = () => {
           onChangeText={setTitle}
           multiline={true}
         />
-        
-        <View style={{borderBottomColor: '#80c04e', borderBottomWidth: 0.5, marginBottom: 20}}/>
 
-        
+        <View
+          style={{
+            borderBottomColor: "#80c04e",
+            borderBottomWidth: 0.5,
+            marginBottom: 20,
+          }}
+        />
+
         <TextInput
-          style={[ styles.contentInput]}
+          style={[styles.contentInput]}
           placeholder="What's on your mind?"
           placeholderTextColor="#ccc"
           value={content}
           onChangeText={setContent}
           multiline={true}
           scrollEnabled={true}
-          
           showsVerticalScrollIndicator={false}
         />
         <TouchableOpacity style={styles.postButton} onPress={handleSubmit}>
-        <Text style={styles.postButtonText}>Post</Text>
-      </TouchableOpacity>
+          <Text style={styles.postButtonText}>Post</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -90,57 +118,56 @@ const CreateTopic = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#333', // Ensure the safe area has the same background color
+    backgroundColor: "#333", // Ensure the safe area has the same background color
   },
   header: {
     marginBottom: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingTop: 10, // Add padding to avoid content being too close to the notch
   },
   headerText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   container: {
     flex: 1,
     padding: 20,
   },
   label: {
-    color: '#fff',
+    color: "#fff",
     marginBottom: 5,
   },
   title: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
-  
+
   contentInput: {
-    
     borderRadius: 5,
-    
+
     marginBottom: 10,
-    color: '#fff',
+    color: "#fff",
     width: width * 0.9,
     height: height * 0.7,
-    fontSize : 20,
+    fontSize: 20,
   },
   postButton: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 30,
     left: 20,
     right: 20,
-    backgroundColor: '#80c04e', // Button background color
+    backgroundColor: "#80c04e", // Button background color
     padding: 10,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   postButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
   },
 });
