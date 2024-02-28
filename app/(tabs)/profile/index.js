@@ -98,7 +98,7 @@ const Profile = () => {
             <TouchableOpacity
               className="rounded-xl p-1 "
               style={{ marginLeft: 8 }}
-              onPress={() => router.navigate("/createTopic")}
+              onPress={() => router.push("/createTopic")}
             >
               <PlusCircleIcon size="38" strokeWidth={2.5} color="#80c04e" />
             </TouchableOpacity>

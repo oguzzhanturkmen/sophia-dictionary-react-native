@@ -12,11 +12,23 @@ import {
 } from "react-native-heroicons/outline";
 import { useState } from "react";
 import { router } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
+import { getFollowers } from "../../../api/api";
+import { useEffect } from "react";
 
 const { width, height } = Dimensions.get("window");
 
-export default function followers() {
+export default function followers({}) {
   const [refresh, setRefresh] = useState(false);
+  const { id } = useLocalSearchParams();
+  const [followers, setFollowers] = useState([]);
+
+  //unhandled promise
+  useEffect(() => {
+    getFollowers(id).then((res) => {
+      setFollowers(res);
+    });
+  }, []);
 
   return (
     <View style={{ backgroundColor: "#191919", height: height, width: width }}>
@@ -67,7 +79,7 @@ export default function followers() {
             </View>
           </View>
         </SafeAreaView>
-        <FollowList name={"Followers"} />
+        <FollowList data={followers} />
       </View>
     </View>
   );
