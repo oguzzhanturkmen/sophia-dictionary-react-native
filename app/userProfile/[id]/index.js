@@ -27,6 +27,7 @@ import {
   getUserDataForOtherProfiles,
   getFollowUser,
   getCreatedTopicsByUser,
+  getLikedEntries
 } from "../../../api/api";
 import { useLocalSearchParams } from "expo-router";
 import UserEntries from "../../../components/UserEntriesList";
@@ -43,12 +44,19 @@ const Profile = () => {
   const [sectionSelected, setSectionSelected] = useState("entries");
   const [isFollowed, setIsFollowed] = useState(false);
   const [topics, setTopics] = useState([]);
+  const [likedEntries, setLikedEntries] = useState([]);
 
   const selectSection = (section) => {
     setSectionSelected(section);
     if (section === "topics") {
       getCreatedTopicsByUser(id).then((res) => {
         setTopics(res);
+        console.log(res);
+      });
+    }
+    if (section === "favorites") {
+      getLikedEntries(id).then((res) => {
+        setLikedEntries(res);
         console.log(res);
       });
     }
@@ -73,6 +81,18 @@ const Profile = () => {
       });
     });
   };
+
+  const sectionComponent = () => {
+    if (sectionSelected === "entries") {
+      return <UserEntries entries={userInformation.entries} />;
+    } else if (sectionSelected === "topics") {
+      return <TopicList data={topics} />;}
+      else if (sectionSelected === "favorites") {
+        return <UserEntries entries={likedEntries} />;
+      }
+    }
+
+
 
   // Mock user data
   const userData = {
@@ -344,11 +364,7 @@ const Profile = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          {sectionSelected === "entries" ? (
-            <UserEntries entries={userInformation.entries} />
-          ) : (
-            <TopicList data={topics} />
-          )}
+          {sectionComponent()}
         </View>
       </View>
     </View>

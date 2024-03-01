@@ -14,56 +14,59 @@ import {
   HandThumbDownIcon,
   ShareIcon,
 } from "react-native-heroicons/outline";
-import { getEntries } from "../api/api";
+import { HandThumbUpIcon as HandThumbUpIconSolid , HandThumbDownIcon as HandThumbDownIconSolid} from "react-native-heroicons/solid";
+import { getEntries, likeAnEntry, dislikeAnEntry  } from "../api/api";
 import { useState } from "react";
 import { useEffect } from "react";
 
-const topics = [
-  {
-    id: "1",
-    name: "This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the",
-    entries: 10,
-  },
-  { id: "2", name: "Topic 2", entries: 20 },
-  {
-    id: "3",
-    name: "This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the",
-    entries: 10,
-  },
-  { id: "4", name: "Topic 2", entries: 20 },
-  {
-    id: "5",
-    name: "This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the",
-    entries: 10,
-  },
-  { id: "6", name: "Topic 2", entries: 20 },
-  {
-    id: "7",
-    name: "This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the",
-    entries: 10,
-  },
-  { id: "8", name: "Topic 2", entries: 20 },
-  {
-    id: "9",
-    name: "This component is used for efficiently rendering a scrollable list of data. The data prop takes an array of data elements, and the",
-    entries: 10,
-  },
-  { id: "10", name: "Topic 2", entries: 20 },
-];
-
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
-export default function ContentList({ id }) {
-  const [content, setContent] = useState([]);
 
+export default function ContentList({ id }) {
+
+  const [content, setContent] = useState([]);
+  const [refresh, setRefresh] = useState(0);
+
+  const handleRefresh = () => {
+    setRefresh((prevKey) => prevKey + 1);
+  };
+
+ 
+  
   useEffect(() => {
-    getEntries(id).then((res) => {
-      setContent(res.content);
-      console.log(res.content);
-    });
-  }, []);
+    const fetchData = async () => {
+      const data = await getEntries(id);
+      setContent(data.content);
+    
+    };
+
+    fetchData();
+  }, [refresh]);
+
+  const handleLike = (topicId , entryId) => {
+    
+    likeAnEntry(topicId, entryId).then((data) => {
+      handleRefresh();
+    }
+    );
+    
+  }
+  const handleDislike = (topicId , entryId) => {
+    dislikeAnEntry(topicId, entryId).then((data) => {
+      handleRefresh();
+    }
+    );
+    
+  }
+
+
+
+    
+
+
 
   const renderItem = ({ item, index }) => (
+    
     <View
       style={[
         styles.itemContainer,
@@ -140,13 +143,26 @@ export default function ContentList({ id }) {
             marginRight: 10,
           }}
         >
+         
           <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <HandThumbUpIcon
+            <TouchableOpacity onPress={() => handleLike(id, item.entryId)}>
+            {item.liked ? (
+            <HandThumbUpIconSolid
+            size={20}
+            strokeWidth={1}
+            color="white"
+            style={{ marginRight: 10 }}
+            />)  : 
+              (
+              <HandThumbUpIcon
               size={20}
               strokeWidth={1}
               color="white"
               style={{ marginRight: 10 }}
             />
+            )}
+            </TouchableOpacity>
+            
             <Text
               style={{
                 color: "white",
@@ -159,12 +175,23 @@ export default function ContentList({ id }) {
             </Text>
           </View>
           <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <HandThumbDownIcon
-              size={20}
-              strokeWidth={1}
-              color="white"
-              style={{ marginRight: 10 }}
-            />
+            <TouchableOpacity onPress={() => handleDislike(id, item.entryId)}>
+            {item.disliked ? (
+              <HandThumbDownIconSolid
+                size={20}
+                strokeWidth={1}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
+            ) : (
+              <HandThumbDownIcon
+                size={20}
+                strokeWidth={1}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
+            )}
+            </TouchableOpacity>
             <Text
               style={{
                 color: "white",
@@ -191,7 +218,7 @@ export default function ContentList({ id }) {
     <FlatList
       data={content}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.entryId}
     />
   );
 }
