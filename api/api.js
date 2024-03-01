@@ -71,7 +71,7 @@ const apiPostCall = async (endpoint, data) => {
 export const getAllTopics = (page) =>
   apiCall("http://localhost:8084/main?page=" + page);
 export const getEntries = (topicId) =>
-  apiCall(`http://localhost:8084/topic/${topicId}`);
+  apiCallAuthorized(`http://localhost:8084/topic/${topicId}`);
 export const postTopic = (data) =>
   apiPostCall("http://localhost:8084/main/post", data);
 export const postEntry = (data, postId) =>
@@ -92,3 +92,12 @@ export const getFollowUser = (id) =>
 
 export const getCreatedTopicsByUser = (id) =>
   apiCallAuthorized(`http://localhost:8084/profile/get/${id}/createdTopics`);
+
+export const likeAnEntry = (topicId, entryId ) =>
+  apiCallAuthorized(`http://localhost:8084/topic/${topicId}/${entryId}/likeEntry`);
+
+
+export const dislikeAnEntry = (topicId, entryId) =>
+  apiCallAuthorized(`http://localhost:8084/topic/${topicId}/${entryId}/dislikeEntry`);
+
+  export const getLikedEntries = (userId) => apiCallAuthorized(`http://localhost:8084/profile/get/${userId}/likedEntries`);
