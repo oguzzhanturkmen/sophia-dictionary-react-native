@@ -6,6 +6,8 @@ import {
   StyleSheet,
   Text,
   SafeAreaView,
+  KeyboardAvoidingView,
+  ScrollView
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Dimensions } from "react-native";
@@ -13,6 +15,9 @@ import { TouchableOpacity } from "react-native";
 import { Bars3Icon, ChevronLeftIcon } from "react-native-heroicons/outline";
 import { router } from "expo-router";
 import { postTopic } from "../../api/api";
+import { Platform } from "react-native";
+
+
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -37,9 +42,12 @@ const CreateTopic = () => {
       });
     });
   };
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  }
 
   return (
-    <View className="" style={{ flex: 1, backgroundColor: "#191919" }}>
+    <KeyboardAvoidingView className="" style={{ flex: 1, backgroundColor: "#191919" }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <SafeAreaView style={{ backgroundColor: "#191919" }}>
         <StatusBar style="light" />
         <View
@@ -96,7 +104,7 @@ const CreateTopic = () => {
             marginBottom: 20,
           }}
         />
-
+<ScrollView keyboardShouldPersistTaps="handled">
         <TextInput
           style={[styles.contentInput]}
           placeholder="What's on your mind?"
@@ -107,11 +115,13 @@ const CreateTopic = () => {
           scrollEnabled={true}
           showsVerticalScrollIndicator={false}
         />
+        </ScrollView>
         <TouchableOpacity style={styles.postButton} onPress={handleSubmit}>
           <Text style={styles.postButtonText}>Post</Text>
         </TouchableOpacity>
+        
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

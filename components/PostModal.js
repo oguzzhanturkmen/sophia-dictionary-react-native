@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, TextInput, Button, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, TextInput, Button, Dimensions, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { postEntry } from '../api/api';
+import { Platform } from 'react-native';
+
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -35,7 +37,7 @@ export default function PostModal( {isModalVisible, setModalVisible , setInputTe
   }
 }
 >
-  <View style={styles.modalView}>
+  <KeyboardAvoidingView style={styles.modalView} behavior={Platform.OS === 'ios' ? 'padding' : 'height' }  >
     <View style={{flexDirection : 'row', justifyContent : 'space-between', width : '100%'}}>
       <View style={{height : 20}}></View>
     <Text style={{color : 'white', fontSize : 20, fontWeight : 'bold'}}>Your Post</Text>
@@ -44,6 +46,7 @@ export default function PostModal( {isModalVisible, setModalVisible , setInputTe
     </TouchableOpacity>
     </View>
     <View >
+      <ScrollView keyboardShouldPersistTaps="handled">
     <TextInput
       style={styles.input}
       onChangeText={setInputText}
@@ -53,7 +56,8 @@ export default function PostModal( {isModalVisible, setModalVisible , setInputTe
       placeholderTextColor="#999"
       multiline={true}
     />
-    </View>
+    </ScrollView>
+    
     <TouchableOpacity
       style={styles.postButton}
       onPress={() => {
@@ -66,7 +70,8 @@ export default function PostModal( {isModalVisible, setModalVisible , setInputTe
     >
       <Text style={styles.buttonText}>Post</Text>
     </TouchableOpacity>
-  </View>
+    </View>
+  </KeyboardAvoidingView>
 </Modal>
 
   )
@@ -76,7 +81,7 @@ const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 0,
       width : width,
-      height: height * 0.8 ,
+      height: height * 0.89 ,
       backgroundColor: '#333',
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
     },
     postButton: {
       position: 'absolute',
-      bottom: 30,
+      bottom: 40,
       left: 20,
       right: 20,
       backgroundColor: '#80c04e', // Button background color

@@ -42,7 +42,7 @@ const Login = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    behavior={Platform.OS === "ios" ? "padding" : -10}
       style={styles.container}
     >
        <Image source={require('../../assets/images/splash.png')} style={styles.logo} />
@@ -82,12 +82,14 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#191919',
       alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 20,
+      
+      paddingTop: height * 0.17,
+      
+      
     },
     logo: {
-      width: 120,
-      height: 120,
+      width: 80,
+      height: 80,
       resizeMode: 'contain',
       marginBottom: 10,
     },
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
       color: '#e8e8e8',
     },
     inputContainer: {
-      marginVertical: 10,
+      marginVertical: 0,
       
     },
     textInput: {
