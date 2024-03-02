@@ -4,7 +4,7 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const ProfileHeader = ({ userInformation, onNavigateFollowers, onNavigateFollowing }) => (
   <View style={styles.headerContainer}>
-    <Image source={{ uri: userInformation.profilePicture }} style={styles.profilePicture} />
+    <Image source={{ uri: 'https://randomuser.me/api/portraits/men/1.jpg' }} style={styles.profilePicture} />
     <View style={styles.statsContainer}>
       <Text style={styles.statText}>{userInformation.entryCount} Entries</Text>
       <TouchableOpacity onPress={onNavigateFollowers}>

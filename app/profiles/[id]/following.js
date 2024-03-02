@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React from "react";
-import FollowList from "../../../components/FollowList";
+import FollowList from "../../../components/Utils/FollowList";
 import { StatusBar } from "expo-status-bar";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,20 +13,22 @@ import {
 import { useState } from "react";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
-import { getFollowers } from "../../../api/api";
+import { getFollowers, getFollowings } from "../../../api/api";
 import { useEffect } from "react";
 
 const { width, height } = Dimensions.get("window");
 
-export default function followers({}) {
+export default function following({}) {
   const [refresh, setRefresh] = useState(false);
   const { id } = useLocalSearchParams();
-  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
 
-  //unhandled promise
+  //async
   useEffect(() => {
-    getFollowers(id).then((res) => {
-      setFollowers(res);
+    getFollowings(id).then((res) => {
+      console.log(id);
+      setFollowing(res);
+      console.log(res);
     });
   }, []);
 
@@ -70,7 +72,7 @@ export default function followers({}) {
                   fontWeight: "bold",
                 }}
               >
-                Followers
+                Following
               </Text>
             </TouchableOpacity>
 
@@ -79,7 +81,7 @@ export default function followers({}) {
             </View>
           </View>
         </SafeAreaView>
-        <FollowList data={followers} />
+        <FollowList data={following} />
       </View>
     </View>
   );

@@ -7,13 +7,17 @@ import {
     getCreatedTopicsByUser,
     getLikedEntries
   } from '../../../api/api';
-import ProfileHeader from '../../../components/Profile/ProfileHeader';
-import UserProfileInfo from '../../../components/Profile/UserProfileInfo';
-import FollowMessageButtons from '../../../components/Profile/FollowMessageButtons';
-import SectionTabs from '../../../components/Profile/SectionTabs';
+import ProfileHeader from '../../../components/Screens/Profile/ProfileHeader';
+import UserProfileInfo from '../../../components/Screens/Profile/UserProfileInfo';
+import FollowMessageButtons from '../../../components/Screens/Profile/FollowMessageButtons';
+import SectionTabs from '../../../components/Screens/Profile/SectionTabs';
 import { useLocalSearchParams } from 'expo-router';
-import UserEntries from '../../../components/UserEntriesList';
-import TopicList from '../../../components/TopicList';
+import UserEntries from '../../../components/Utils/UserEntriesList';
+import TopicList from '../../../components/Utils/TopicList';
+import ProfileScreenHeader from '../../../components/Screens/Profile/ProfileScreenHeader';
+
+import {router} from 'expo-router';
+
 const { width, height } = Dimensions.get('window');
 
 const Profile = () => {
@@ -24,6 +28,8 @@ const Profile = () => {
     const [entries, setEntries] = useState([]);
     const [topics, setTopics] = useState([]);
     const [likedEntries, setLikedEntries] = useState([]);
+
+    
   
     useEffect(() => {
       const fetchData = async () => {
@@ -32,11 +38,10 @@ const Profile = () => {
           const followedStatus = await getIsFollowed(id);
           setUserInformation(userInfo);
           setIsFollowed(followedStatus);
+          setEntries(userInfo.entries);
   
-          // Optionally, fetch entries, topics, and liked entries based on default section
-          // For this example, let's assume entries are part of userInformation
-          // If topics or liked entries are the default section, fetch them here similarly
-          setEntries(userInfo.entries); // Adjust based on actual response structure
+
+        
         } catch (error) {
           Alert.alert("Error", "Failed to fetch user information.");
         }
@@ -49,7 +54,7 @@ const Profile = () => {
       try {
         const newFollowStatus = await getFollowUser(id);
         setIsFollowed(newFollowStatus);
-        // Optionally, refresh user information to reflect changes
+        
         const userInfo = await getUserDataForOtherProfiles(id);
         setUserInformation(userInfo);
       } catch (error) {
@@ -77,7 +82,7 @@ const Profile = () => {
         case 'entries':
           return <UserEntries entries={entries} />;
         case 'topics':
-          return <TopicList topics={topics} />;
+          return <TopicList data={topics} />;
         case 'favorites':
           return <UserEntries entries={likedEntries} />;
         default:
@@ -86,6 +91,7 @@ const Profile = () => {
     };
   return (
     <ScrollView style={styles.container}>
+      <ProfileScreenHeader router={router} username={userInformation.username}/>
       <ProfileHeader userInformation={userInformation} />
       <UserProfileInfo username={userInformation.username} bio={userInformation.bio} />
       <FollowMessageButtons isFollowed={isFollowed} onFollowUser={handleFollowUser} />
@@ -100,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#191919',
     height: height,
   },
-  // You can add other styles for the Profile component here
+
 });
 
 export default Profile;

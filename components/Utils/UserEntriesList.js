@@ -14,7 +14,7 @@ import {
   HandThumbDownIcon,
   ShareIcon,
 } from "react-native-heroicons/outline";
-import { getEntries } from "../api/api";
+import { getEntries } from "../../api/api";
 import { useState } from "react";
 import { useEffect } from "react";
 

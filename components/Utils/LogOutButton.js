@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native'
-import { logoutUser} from '../api/auth'
+import { logoutUser} from '../../api/auth'
 import { Dimensions } from 'react-native'
 
 

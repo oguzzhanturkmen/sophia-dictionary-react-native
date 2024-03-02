@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, TextInput, Button, Dimensions, KeyboardAvoidingView, ScrollView } from 'react-native';
-import { postEntry } from '../api/api';
+import { postEntry } from '../../api/api';
 import { Platform } from 'react-native';
 
 

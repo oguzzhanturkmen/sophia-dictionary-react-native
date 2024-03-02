@@ -15,7 +15,7 @@ import {
   ShareIcon,
 } from "react-native-heroicons/outline";
 import { HandThumbUpIcon as HandThumbUpIconSolid , HandThumbDownIcon as HandThumbDownIconSolid} from "react-native-heroicons/solid";
-import { getEntries, likeAnEntry, dislikeAnEntry  } from "../api/api";
+import { getEntries, likeAnEntry, dislikeAnEntry  } from "../../api/api";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -107,7 +107,7 @@ export default function ContentList({ id }) {
             <TouchableOpacity
               onPress={() =>
                 router.navigate({
-                  pathname: `userProfile/${item.entryOwnerId}`,
+                  pathname: `profiles/${item.entryOwnerId}`,
                   params: {
                     id: item.entryOwnerId,
                   },
