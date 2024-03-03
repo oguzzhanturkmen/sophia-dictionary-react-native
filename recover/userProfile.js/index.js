@@ -20,14 +20,13 @@ import {
   Cog8ToothIcon,
 } from "react-native-heroicons/outline";
 import { useState } from "react";
-import ContentList from "../../../components/ContentList";
-import { Stack, Tabs } from "expo-router";
+
 import {
   getUserDataForProfile,
   getUserDataForOtherProfiles,
 } from "../../../api/api";
 import { useLocalSearchParams } from "expo-router";
-import UserEntries from "../../../components/UserEntriesList";
+import UserEntries from "../../../components/Utils/UserEntriesList";
 import { router } from "expo-router";
 
 const { width, height } = Dimensions.get("window");
@@ -59,20 +58,7 @@ const Profile = () => {
     setSectionSelected(section);
   };
 
-  // Mock user data
-  const userData = {
-    username: "john_doe",
-    fullName: "John Doe",
-    followers: 250,
-    following: 20,
-    postsX: 30,
-    profilePicture: "https://via.placeholder.com/100",
-    bio: "📷 Photographer | 🌎 Traveler | 📚 Book Lover",
-    posts: Array.from(
-      { length: 30 },
-      (_, i) => `https://picsum.photos/200/300?random=${i + 1}`
-    ),
-  };
+
 
   const renderPostItem = ({ item }) => (
     <Image source={{ uri: item }} style={styles.postItem} />
@@ -135,7 +121,7 @@ const Profile = () => {
         <View style={styles.container}>
           <View style={styles.headerContainer}>
             <Image
-              source={{ uri: userData.profilePicture }}
+              
               style={styles.profilePicture}
             />
 

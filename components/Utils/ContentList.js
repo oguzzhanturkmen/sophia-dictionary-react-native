@@ -14,14 +14,62 @@ import {
   HandThumbDownIcon,
   ShareIcon,
 } from "react-native-heroicons/outline";
-import { getEntries } from "../api/api";
+import { HandThumbUpIcon as HandThumbUpIconSolid , HandThumbDownIcon as HandThumbDownIconSolid} from "react-native-heroicons/solid";
+import { getEntries, likeAnEntry, dislikeAnEntry } from "../../api/entry";
 import { useState } from "react";
 import { useEffect } from "react";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
-export default function UserEntries({ entries }) {
+
+export default function ContentList({ id }) {
+
+  const [content, setContent] = useState([]);
+  const [topicInformation, setTopicInformation] = useState({});
+
+  const [refresh, setRefresh] = useState(0);
+
+  const handleRefresh = () => {
+    setRefresh((prevKey) => prevKey + 1);
+  };
+
+ 
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getEntries(id);
+      setContent(data.entries.content);
+      setTopicInformation(data.topic);
+    
+    };
+
+    fetchData();
+  }, [refresh]);
+
+  const handleLike = (entryId) => {
+    
+    likeAnEntry(entryId).then((data) => {
+      handleRefresh();
+    }
+    );
+    
+  }
+  const handleDislike = (entryId) => {
+    dislikeAnEntry(entryId).then((data) => {
+      handleRefresh();
+    }
+    );
+    
+  }
+
+
+
+    
+
+
+
   const renderItem = ({ item, index }) => (
+    
     <View
       style={[
         styles.itemContainer,
@@ -29,7 +77,6 @@ export default function UserEntries({ entries }) {
       ]}
     >
       <View style={{ flex: 1 }}>
-        <Text style={styles.itemHeader}>{item.topicName}</Text>
         <Text style={styles.itemText}>{item.entryContent}</Text>
         <View
           style={{
@@ -63,9 +110,9 @@ export default function UserEntries({ entries }) {
             <TouchableOpacity
               onPress={() =>
                 router.navigate({
-                  pathname: `userProfile/${item.entryOwnerId}`,
+                  pathname: `profiles/${item.entryAuthorId}`,
                   params: {
-                    id: item.entryOwnerId,
+                    id: item.entryAuthorId,
                   },
                 })
               }
@@ -78,7 +125,7 @@ export default function UserEntries({ entries }) {
                   color: "#80c04e",
                 }}
               >
-                {item.entryOwner}
+                {item.entryAuthor}
               </Text>
             </TouchableOpacity>
           </View>
@@ -99,13 +146,26 @@ export default function UserEntries({ entries }) {
             marginRight: 10,
           }}
         >
+         
           <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <HandThumbUpIcon
+            <TouchableOpacity onPress={() => handleLike(item.entryId)}>
+            {item.liked ? (
+            <HandThumbUpIconSolid
+            size={20}
+            strokeWidth={1}
+            color="white"
+            style={{ marginRight: 10 }}
+            />)  : 
+              (
+              <HandThumbUpIcon
               size={20}
               strokeWidth={1}
               color="white"
               style={{ marginRight: 10 }}
             />
+            )}
+            </TouchableOpacity>
+            
             <Text
               style={{
                 color: "white",
@@ -118,12 +178,23 @@ export default function UserEntries({ entries }) {
             </Text>
           </View>
           <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <HandThumbDownIcon
-              size={20}
-              strokeWidth={1}
-              color="white"
-              style={{ marginRight: 10 }}
-            />
+            <TouchableOpacity onPress={() => handleDislike(item.entryId)}>
+            {item.disliked ? (
+              <HandThumbDownIconSolid
+                size={20}
+                strokeWidth={1}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
+            ) : (
+              <HandThumbDownIcon
+                size={20}
+                strokeWidth={1}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
+            )}
+            </TouchableOpacity>
             <Text
               style={{
                 color: "white",
@@ -148,7 +219,7 @@ export default function UserEntries({ entries }) {
 
   return (
     <FlatList
-      data={entries}
+      data={content}
       renderItem={renderItem}
       keyExtractor={(item) => item.entryId}
     />
@@ -158,7 +229,7 @@ export default function UserEntries({ entries }) {
 const styles = StyleSheet.create({
   itemContainer: {
     paddingLeft: height * 0.01,
-    paddingBottom: height * 0.013,
+    paddingBottom: height * 0.02,
     paddingTop: height * 0.013,
     width: width,
   },
@@ -167,13 +238,5 @@ const styles = StyleSheet.create({
     width: width * 0.97,
     fontSize: width * 0.038,
     marginBottom: 5,
-  },
-  itemHeader: {
-    color: "#80c04e",
-    width: width * 0.96,
-    fontSize: width * 0.04,
-    fontWeight: "600",
-    marginBottom: 14,
-    fontSize: 15,
   },
 });

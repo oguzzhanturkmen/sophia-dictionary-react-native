@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React from "react";
-import FollowList from "../../../components/FollowList";
+import FollowList from "../../../components/Utils/FollowList";
 import { StatusBar } from "expo-status-bar";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
-import { getFollowers } from "../../../api/api";
+import { getFollowers } from "../../../api/user";
 import { useEffect } from "react";
 
 const { width, height } = Dimensions.get("window");
@@ -25,7 +25,7 @@ export default function followers({}) {
 
   //unhandled promise
   useEffect(() => {
-    getFollowers(id).then((res) => {
+    getFollowers().then((res) => {
       setFollowers(res);
     });
   }, []);

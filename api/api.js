@@ -2,15 +2,11 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const portNumber = 8084;
-const baseUrl = `http://localhost:${portNumber}`;
+const baseUrl = `192.168.111.7:${portNumber}`;
 
-const loginUrl = `${baseUrl}/auth/login`;
-const registerUrl = `${baseUrl}/auth/register`;
 
-const aa = "http://localhost:8084/main";
-const entryScreenUrl = `${baseUrl}/topic`;
 
-const apiCall = async (endpoint, params) => {
+const apiCallUnauthorized = async (endpoint, params) => {
   const options = {
     method: "GET",
     url: endpoint,
@@ -69,32 +65,32 @@ const apiPostCall = async (endpoint, data) => {
 };
 
 export const getAllTopics = (page) =>
-  apiCall("http://localhost:8084/main?page=" + page);
+  apiCall("http://192.168.111.7:8084/main?page=" + page);
 export const getEntries = (topicId) =>
-  apiCallAuthorized(`http://localhost:8084/topic/${topicId}`);
+  apiCallAuthorized(`http://192.168.111.7:8084/topic/${topicId}`);
 export const postTopic = (data) =>
-  apiPostCall("http://localhost:8084/main/post", data);
+  apiPostCall("http://192.168.111.7:8084/main/post", data);
 export const postEntry = (data, postId) =>
-  apiPostCall("http://localhost:8084/topic/" + postId + "/post", data);
+  apiPostCall("http://192.168.111.7:8084/topic/" + postId + "/post", data);
 export const getUserDataForProfile = () =>
-  apiCallAuthorized(`http://localhost:8084/auth/user`);
+  apiCallAuthorized(`http://192.168.111.7:8084/auth/user`);
 export const getUserDataForOtherProfiles = (id) =>
-  apiCallAuthorized(`http://localhost:8084/user/get/${id}`);
+  apiCallAuthorized(`http://192.168.111.7:8084/user/get/${id}`);
 export const getFollowers = (id) =>
-  apiCallAuthorized(`http://localhost:8084/user/get/${id}/followers`);
+  apiCallAuthorized(`http://192.168.111.7:8084/user/get/${id}/followers`);
 export const getFollowings = (id) =>
-  apiCallAuthorized(`http://localhost:8084/user/get/${id}/following`);
+  apiCallAuthorized(`http://192.168.111.7:8084/user/get/${id}/following`);
 export const getIsFollowed = (id) =>
-  apiCallAuthorized(`http://localhost:8084/profile/get/isFollowed/${id}`);
+  apiCallAuthorized(`http://192.168.111.7:8084/profile/get/isFollowed/${id}`);
 
 export const getFollowUser = (id) =>
-  apiCallAuthorized(`http://localhost:8084/profile/follow/${id}`);
+  apiCallAuthorized(`http://192.168.111.7:8084/profile/follow/${id}`);
 
 export const getCreatedTopicsByUser = (id) =>
-  apiCallAuthorized(`http://localhost:8084/profile/get/${id}/createdTopics`);
+  apiCallAuthorized(`http://192.168.111.7:8084/profile/get/${id}/createdTopics`);
 
 export const likeAnEntry = (topicId, entryId ) =>
-  apiCallAuthorized(`http://localhost:8084/topic/${topicId}/${entryId}/likeEntry`);
+  apiCallAuthorized(`http://192.168.111.7:8084/topic/${topicId}/${entryId}/likeEntry`);
 
 
 export const dislikeAnEntry = (topicId, entryId) =>

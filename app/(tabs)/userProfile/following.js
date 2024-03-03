@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React from "react";
-import FollowList from "../../../components/FollowList";
+import FollowList from "../../../components/Utils/FollowList";
 import { StatusBar } from "expo-status-bar";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,22 +13,21 @@ import {
 import { useState } from "react";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
-import { getFollowers, getFollowings } from "../../../api/api";
+import { getFollowingsOfUser } from "../../../api/user";
 import { useEffect } from "react";
 
 const { width, height } = Dimensions.get("window");
 
 export default function following({}) {
   const [refresh, setRefresh] = useState(false);
-  const { id } = useLocalSearchParams();
+  
   const [following, setFollowing] = useState([]);
 
   //async
   useEffect(() => {
-    getFollowings(id).then((res) => {
-      console.log(id);
+    getFollowingsOfUser().then((res) => {
       setFollowing(res);
-      console.log(res);
+      
     });
   }, []);
 

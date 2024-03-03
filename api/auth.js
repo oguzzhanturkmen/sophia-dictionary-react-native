@@ -3,8 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 
 // Replace 'YOUR_BACKEND_REGISTER_ENDPOINT' with your actual registration endpoint URL
-const loginEndpoint = 'http://localhost:8084/auth/login';
-const registerEndpoint = 'http://localhost:8084/auth/register';
+const loginEndpoint = 'http://192.168.111.7:8084/auth/login';
+const registerEndpoint = 'http://192.168.111.7:8084/auth/register';
 
 
 export const authenticateUser = async (username, password) => {

@@ -14,59 +14,14 @@ import {
   HandThumbDownIcon,
   ShareIcon,
 } from "react-native-heroicons/outline";
-import { HandThumbUpIcon as HandThumbUpIconSolid , HandThumbDownIcon as HandThumbDownIconSolid} from "react-native-heroicons/solid";
-import { getEntries, likeAnEntry, dislikeAnEntry  } from "../api/api";
+import { getEntries } from "../../api/api";
 import { useState } from "react";
 import { useEffect } from "react";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
-
-export default function ContentList({ id }) {
-
-  const [content, setContent] = useState([]);
-  const [refresh, setRefresh] = useState(0);
-
-  const handleRefresh = () => {
-    setRefresh((prevKey) => prevKey + 1);
-  };
-
- 
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getEntries(id);
-      setContent(data.content);
-    
-    };
-
-    fetchData();
-  }, [refresh]);
-
-  const handleLike = (topicId , entryId) => {
-    
-    likeAnEntry(topicId, entryId).then((data) => {
-      handleRefresh();
-    }
-    );
-    
-  }
-  const handleDislike = (topicId , entryId) => {
-    dislikeAnEntry(topicId, entryId).then((data) => {
-      handleRefresh();
-    }
-    );
-    
-  }
-
-
-
-    
-
-
-
+export default function UserEntries({ entries }) {
   const renderItem = ({ item, index }) => (
-    
     <View
       style={[
         styles.itemContainer,
@@ -74,6 +29,7 @@ export default function ContentList({ id }) {
       ]}
     >
       <View style={{ flex: 1 }}>
+        <Text style={styles.itemHeader}>{item.topicName}</Text>
         <Text style={styles.itemText}>{item.entryContent}</Text>
         <View
           style={{
@@ -143,26 +99,13 @@ export default function ContentList({ id }) {
             marginRight: 10,
           }}
         >
-         
           <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <TouchableOpacity onPress={() => handleLike(id, item.entryId)}>
-            {item.liked ? (
-            <HandThumbUpIconSolid
-            size={20}
-            strokeWidth={1}
-            color="white"
-            style={{ marginRight: 10 }}
-            />)  : 
-              (
-              <HandThumbUpIcon
+            <HandThumbUpIcon
               size={20}
               strokeWidth={1}
               color="white"
               style={{ marginRight: 10 }}
             />
-            )}
-            </TouchableOpacity>
-            
             <Text
               style={{
                 color: "white",
@@ -175,23 +118,12 @@ export default function ContentList({ id }) {
             </Text>
           </View>
           <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <TouchableOpacity onPress={() => handleDislike(id, item.entryId)}>
-            {item.disliked ? (
-              <HandThumbDownIconSolid
-                size={20}
-                strokeWidth={1}
-                color="white"
-                style={{ marginRight: 10 }}
-              />
-            ) : (
-              <HandThumbDownIcon
-                size={20}
-                strokeWidth={1}
-                color="white"
-                style={{ marginRight: 10 }}
-              />
-            )}
-            </TouchableOpacity>
+            <HandThumbDownIcon
+              size={20}
+              strokeWidth={1}
+              color="white"
+              style={{ marginRight: 10 }}
+            />
             <Text
               style={{
                 color: "white",
@@ -216,7 +148,7 @@ export default function ContentList({ id }) {
 
   return (
     <FlatList
-      data={content}
+      data={entries}
       renderItem={renderItem}
       keyExtractor={(item) => item.entryId}
     />
@@ -226,7 +158,7 @@ export default function ContentList({ id }) {
 const styles = StyleSheet.create({
   itemContainer: {
     paddingLeft: height * 0.01,
-    paddingBottom: height * 0.02,
+    paddingBottom: height * 0.013,
     paddingTop: height * 0.013,
     width: width,
   },
@@ -235,5 +167,13 @@ const styles = StyleSheet.create({
     width: width * 0.97,
     fontSize: width * 0.038,
     marginBottom: 5,
+  },
+  itemHeader: {
+    color: "#80c04e",
+    width: width * 0.96,
+    fontSize: width * 0.04,
+    fontWeight: "600",
+    marginBottom: 14,
+    fontSize: 15,
   },
 });

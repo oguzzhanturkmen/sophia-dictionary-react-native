@@ -2,7 +2,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import React, { useEffect } from 'react'
 import { Dimensions } from 'react-native';
 import { Link, router } from 'expo-router';
-import { getAllTopics } from '../api/api';
+import { getAllTopics } from '../../api/api';
 
 
 
