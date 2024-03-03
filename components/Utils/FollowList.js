@@ -15,7 +15,7 @@ const FollowerItem = ({ username, bio, imageUrl, userId, entryCount }) => (
     style={styles.itemContainer}
     onPress={() =>
       router.navigate({
-        pathname: `userProfile/${userId}`,
+        pathname: `profiles/${userId}`,
         params: {
           id: userId,
         },

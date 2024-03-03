@@ -15,7 +15,7 @@ import {
   ShareIcon,
 } from "react-native-heroicons/outline";
 import { HandThumbUpIcon as HandThumbUpIconSolid , HandThumbDownIcon as HandThumbDownIconSolid} from "react-native-heroicons/solid";
-import { getEntries, likeAnEntry, dislikeAnEntry  } from "../../api/api";
+import { getEntries, likeAnEntry, dislikeAnEntry } from "../../api/entry";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -25,6 +25,8 @@ const width = Dimensions.get("window").width;
 export default function ContentList({ id }) {
 
   const [content, setContent] = useState([]);
+  const [topicInformation, setTopicInformation] = useState({});
+
   const [refresh, setRefresh] = useState(0);
 
   const handleRefresh = () => {
@@ -36,23 +38,24 @@ export default function ContentList({ id }) {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getEntries(id);
-      setContent(data.content);
+      setContent(data.entries.content);
+      setTopicInformation(data.topic);
     
     };
 
     fetchData();
   }, [refresh]);
 
-  const handleLike = (topicId , entryId) => {
+  const handleLike = (entryId) => {
     
-    likeAnEntry(topicId, entryId).then((data) => {
+    likeAnEntry(entryId).then((data) => {
       handleRefresh();
     }
     );
     
   }
-  const handleDislike = (topicId , entryId) => {
-    dislikeAnEntry(topicId, entryId).then((data) => {
+  const handleDislike = (entryId) => {
+    dislikeAnEntry(entryId).then((data) => {
       handleRefresh();
     }
     );
@@ -107,9 +110,9 @@ export default function ContentList({ id }) {
             <TouchableOpacity
               onPress={() =>
                 router.navigate({
-                  pathname: `profiles/${item.entryOwnerId}`,
+                  pathname: `profiles/${item.entryAuthorId}`,
                   params: {
-                    id: item.entryOwnerId,
+                    id: item.entryAuthorId,
                   },
                 })
               }
@@ -122,7 +125,7 @@ export default function ContentList({ id }) {
                   color: "#80c04e",
                 }}
               >
-                {item.entryOwner}
+                {item.entryAuthor}
               </Text>
             </TouchableOpacity>
           </View>
@@ -145,7 +148,7 @@ export default function ContentList({ id }) {
         >
          
           <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <TouchableOpacity onPress={() => handleLike(id, item.entryId)}>
+            <TouchableOpacity onPress={() => handleLike(item.entryId)}>
             {item.liked ? (
             <HandThumbUpIconSolid
             size={20}
@@ -175,7 +178,7 @@ export default function ContentList({ id }) {
             </Text>
           </View>
           <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <TouchableOpacity onPress={() => handleDislike(id, item.entryId)}>
+            <TouchableOpacity onPress={() => handleDislike(item.entryId)}>
             {item.disliked ? (
               <HandThumbDownIconSolid
                 size={20}

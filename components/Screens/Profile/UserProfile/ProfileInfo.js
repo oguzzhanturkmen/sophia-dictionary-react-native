@@ -18,14 +18,14 @@ const ProfileInfo = ({ userInformation }) => {
         </View>
         <TouchableOpacity
           style={styles.statItem}
-          onPress={() => router.navigate(`/userProfile/${userInformation.userId}/followers`)}
+          onPress={() => router.navigate(`/userProfile/followers`)}
         >
           <Text style={styles.statValue}>{userInformation.followerCount}</Text>
           <Text style={styles.statLabel}>Followers</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.statItem}
-          onPress={() => router.navigate(`/userProfile/${userInformation.userId}/following`)}
+          onPress={() => router.navigate(`/userProfile/following`)}
         >
           <Text style={styles.statValue}>{userInformation.followingCount}</Text>
           <Text style={styles.statLabel}>Following</Text>

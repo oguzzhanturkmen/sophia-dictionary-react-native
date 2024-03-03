@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
-import { postTopic } from "../../api/api"; 
+import { postTopic } from "../../api/topic"; 
 import Header from "../../components/Screens/CreateTopic/Header";
 import TitleInput from "../../components/Screens/CreateTopic/TitleInput";
 import ContentInput from "../../components/Screens/CreateTopic/ContentInput";
@@ -23,12 +23,22 @@ const CreateTopic = () => {
       topicName: title,
       content: content,
     };
-    router.back();
-    postTopic(data).then((res) => {
-      console.log(res);
-      
-    });
+     handlePostTopic(data);
+    
+    
+     
   };
+
+   const handlePostTopic = async (data) => {
+    try {
+      const response = await postTopic(data);
+      router.navigate("trending/" + response.object.topicId);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

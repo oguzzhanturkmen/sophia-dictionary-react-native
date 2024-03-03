@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import {
     getUserDataForOtherProfiles,
-    getIsFollowed,
+    
     getFollowUser,
-    getCreatedTopicsByUser,
+    
     getLikedEntries
   } from '../../../api/api';
+  import {getUserProfile, getIsFollowed , getCreatedEntriesByUser, getLikedEntriesByUser, getCreatedTopicsByUser,followOrUnfollow} from '../../../api/user';
 import ProfileHeader from '../../../components/Screens/Profile/ProfileHeader';
 import UserProfileInfo from '../../../components/Screens/Profile/UserProfileInfo';
 import FollowMessageButtons from '../../../components/Screens/Profile/FollowMessageButtons';
@@ -34,11 +35,12 @@ const Profile = () => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const userInfo = await getUserDataForOtherProfiles(id);
+          const userInfo = await getUserProfile(id);
           const followedStatus = await getIsFollowed(id);
+          const userEntries = await getCreatedEntriesByUser(id);
           setUserInformation(userInfo);
-          setIsFollowed(followedStatus);
-          setEntries(userInfo.entries);
+          setIsFollowed(followedStatus.state);
+          setEntries(userEntries);
   
 
         
@@ -46,16 +48,17 @@ const Profile = () => {
           Alert.alert("Error", "Failed to fetch user information.");
         }
       };
-  
+      console.log(id);
       fetchData();
+      console.log(id);
     }, [id]);
   
     const handleFollowUser = async () => {
       try {
-        const newFollowStatus = await getFollowUser(id);
-        setIsFollowed(newFollowStatus);
+        const newFollowStatus = await followOrUnfollow(id);
+        setIsFollowed(newFollowStatus.state);
         
-        const userInfo = await getUserDataForOtherProfiles(id);
+        const userInfo = await getUserProfile(id);
         setUserInformation(userInfo);
       } catch (error) {
         Alert.alert("Error", "Failed to update follow status.");
@@ -69,7 +72,7 @@ const Profile = () => {
           const topicsData = await getCreatedTopicsByUser(id);
           setTopics(topicsData);
         } else if (section === "favorites") {
-          const likedEntriesData = await getLikedEntries(id);
+          const likedEntriesData = await getLikedEntriesByUser(id);
           setLikedEntries(likedEntriesData);
         }
       } catch (error) {
@@ -89,10 +92,17 @@ const Profile = () => {
           return <View />;
       }
     };
+
+    const onNavigateFollowers = () => {
+      router.push(`profiles/${id}/followers`, { id: id });
+    }
+    const onNavigateFollowings = () => {
+      router.push(`profiles/${id}/following`, { id: id });
+    }
   return (
     <ScrollView style={styles.container}>
       <ProfileScreenHeader router={router} username={userInformation.username}/>
-      <ProfileHeader userInformation={userInformation} />
+      <ProfileHeader userInformation={userInformation} onNavigateFollowers={onNavigateFollowers} onNavigateFollowing={onNavigateFollowings} />
       <UserProfileInfo username={userInformation.username} bio={userInformation.bio} />
       <FollowMessageButtons isFollowed={isFollowed} onFollowUser={handleFollowUser} />
       <SectionTabs sectionSelected={sectionSelected} onSelectSection={selectSection} />

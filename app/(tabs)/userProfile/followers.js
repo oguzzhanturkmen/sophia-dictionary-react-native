@@ -13,21 +13,20 @@ import {
 import { useState } from "react";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
-import { getFollowingsOfUser } from "../../../api/user";
+import { getFollowers } from "../../../api/user";
 import { useEffect } from "react";
 
 const { width, height } = Dimensions.get("window");
 
-export default function following({}) {
+export default function followers({}) {
   const [refresh, setRefresh] = useState(false);
   const { id } = useLocalSearchParams();
-  const [following, setFollowing] = useState([]);
+  const [followers, setFollowers] = useState([]);
 
-  //async
+  //unhandled promise
   useEffect(() => {
-    getFollowingsOfUser(id).then((res) => {
-      setFollowing(res);
-      
+    getFollowers().then((res) => {
+      setFollowers(res);
     });
   }, []);
 
@@ -71,7 +70,7 @@ export default function following({}) {
                   fontWeight: "bold",
                 }}
               >
-                Following
+                Followers
               </Text>
             </TouchableOpacity>
 
@@ -80,7 +79,7 @@ export default function following({}) {
             </View>
           </View>
         </SafeAreaView>
-        <FollowList data={following} />
+        <FollowList data={followers} />
       </View>
     </View>
   );

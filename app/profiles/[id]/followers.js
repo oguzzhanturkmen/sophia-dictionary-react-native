@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
-import { getFollowers } from "../../../api/api";
+import { getFollowers } from "../../../api/user";
 import { useEffect } from "react";
 
 const { width, height } = Dimensions.get("window");

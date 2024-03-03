@@ -8,6 +8,7 @@ import Footer from "../../../components/Screens/TrendingScreen/FooterComponent";
 import Header from "../../../components/Screens/TrendingScreen/Header";
 import TopicListView from "../../../components/Screens/TrendingScreen/TopicListView";
 import LogoutModalComponent from "../../../components/Screens/TrendingScreen/LogoutModalComponent";
+import {getTopics} from "../../../api/topic"
 
 
 const height = Dimensions.get("window").height;
@@ -28,11 +29,11 @@ export default function HomePage() {
     };
 
     const fetchTopics = async () => {
-      const res = await getAllTopics(currentPage);
+      const res = await getTopics(currentPage);
       setTopics(res.content);
       setTotalPages(res.totalPages);
     };
-
+    
     checkLoginStatus();
     fetchTopics();
   }, [isLogged, currentPage, refresh]);

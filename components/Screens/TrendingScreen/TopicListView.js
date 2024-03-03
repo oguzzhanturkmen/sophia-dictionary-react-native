@@ -19,7 +19,7 @@ const TopicListView = ({ topics }) => {
 
 const styles = StyleSheet.create({
   container: { paddingBottom: height * 0.3 },
-  scrollView: {},
+  scrollView: {height: height * 0.75 , },
 });
 
 export default TopicListView;

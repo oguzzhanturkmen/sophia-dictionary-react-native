@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, SafeAreaView, StatusBar, Dimensions, ScrollView } from "react-native";
 
-import { getUserDataForProfile, getUserDataForOtherProfiles } from "../../../api/api";
+
 import ProfileHeader from "../../../components/Screens/Profile/UserProfile/ProfileHeader";
 import UserProfileInfo from "../../../components/Screens/Profile/UserProfileInfo";
 import ProfileActions from "../../../components/Screens/Profile/UserProfile/PorfileActions";
@@ -9,6 +9,7 @@ import SectionTabs from "../../../components/Screens/Profile/SectionTabs";
 import UserEntries from "../../../components/Utils/UserEntriesList";
 import ProfileInfo from "../../../components/Screens/Profile/UserProfile/ProfileInfo";
 import TopicList from "../../../components/Utils/TopicList";
+import {getUserProfile, getIsFollowed , getCreatedEntriesByUser, getLikedEntriesByUser, getCreatedTopicsByUser,getUsersProfileData} from '../../../api/user';
 
 const { width, height } = Dimensions.get("window");
 
@@ -22,10 +23,10 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const userInfo = await getUserDataForProfile();
+      const userInfo = await getUsersProfileData();
       setUserInformation(userInfo);
-      const otherInfo = await getUserDataForOtherProfiles(userInfo.userId);
-      setAllInformation(otherInfo);
+      const userEntries = await getCreatedEntriesByUser();
+      setEntries(userEntries);
     };
 
     fetchData();
@@ -36,10 +37,10 @@ const Profile = () => {
     setSectionSelected(section);
     try {
       if (section === "topics") {
-        const topicsData = await getCreatedTopicsByUser(id);
+        const topicsData = await getCreatedTopicsByUser();
         setTopics(topicsData);
       } else if (section === "favorites") {
-        const likedEntriesData = await getLikedEntries(id);
+        const likedEntriesData = await getLikedEntriesByUser();
         setLikedEntries(likedEntriesData);
       }
     } catch (error) {

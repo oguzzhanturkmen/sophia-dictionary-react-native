@@ -20,12 +20,12 @@ const { width, height } = Dimensions.get("window");
 
 export default function following({}) {
   const [refresh, setRefresh] = useState(false);
-  const { id } = useLocalSearchParams();
+  
   const [following, setFollowing] = useState([]);
 
   //async
   useEffect(() => {
-    getFollowingsOfUser(id).then((res) => {
+    getFollowingsOfUser().then((res) => {
       setFollowing(res);
       
     });

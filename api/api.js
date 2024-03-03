@@ -2,15 +2,11 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const portNumber = 8084;
-const baseUrl = `http://localhost:${portNumber}`;
+const baseUrl = `192.168.111.7:${portNumber}`;
 
-const loginUrl = `${baseUrl}/auth/login`;
-const registerUrl = `${baseUrl}/auth/register`;
 
-const aa = "http://localhost:8084/main";
-const entryScreenUrl = `${baseUrl}/topic`;
 
-const apiCall = async (endpoint, params) => {
+const apiCallUnauthorized = async (endpoint, params) => {
   const options = {
     method: "GET",
     url: endpoint,
