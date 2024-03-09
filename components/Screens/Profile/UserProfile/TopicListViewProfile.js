@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet, Dimensions, RefreshControl } from 'react-native';
-import { SearchBar } from 'react-native-screens';
-import TopicList from '../../Utils/TopicList';
+import TopicListProfile from '../../Profile/UserProfile/TopicListProfile';
 
 
 const height = Dimensions.get("window").height;
 
-const TopicListView = ({ topics, path, onRefresh  }) => {
+const TopicListViewProfile = ({ topics, path, onRefresh  }) => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const handleRefresh = () => {
@@ -17,7 +16,7 @@ const TopicListView = ({ topics, path, onRefresh  }) => {
   };
   return (
     <View style={styles.container}>
-      <SearchBar />
+     
       <ScrollView
         style={styles.scrollView}
         refreshControl={
@@ -27,7 +26,7 @@ const TopicListView = ({ topics, path, onRefresh  }) => {
           />
         }
       >
-        <TopicList data={topics} path={path}  />
+        <TopicListProfile data={topics} path={path}  />
       </ScrollView>
     </View>
   );
@@ -35,7 +34,7 @@ const TopicListView = ({ topics, path, onRefresh  }) => {
 
 const styles = StyleSheet.create({
   container: { paddingBottom: height * 0.3 },
-  scrollView: {height: height * 0.75  },
+  scrollView: {height: height * 0.75 , },
 });
 
-export default TopicListView;
+export default TopicListViewProfile;

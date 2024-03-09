@@ -1,123 +1,78 @@
-import { View, Text, Modal, StyleSheet } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { Dimensions } from "react-native";
-import TopicList from "../../../components/Utils/TopicList";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SearchBar from "../../../components/Utils/SearchBar";
-import { ScrollView } from "react-native";
-import { TouchableOpacity } from "react-native";
-import {
-  Bars3Icon,
-  ChevronLeftIcon,
-  PlusCircleIcon,
-  UserCircleIcon,
-} from "react-native-heroicons/outline";
-import { Slot, router } from "expo-router";
-import { getAllTopics } from "../../../api/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { logoutUser } from "../../../api/auth";
-import LogOutButton from "../../../components/Utils/LogOutButton";
+import { getAllTopics } from "../../../api/api";
+import Footer from "../../../components/Screens/TrendingScreen/FooterComponent";
+import Header from "../../../components/Screens/TrendingScreen/Header";
+import TopicListView from "../../../components/Screens/TrendingScreen/TopicListView";
+import LogoutModalComponent from "../../../components/Screens/TrendingScreen/LogoutModalComponent";
+import {getTopics} from "../../../api/topic"
+
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
 export default function HomePage() {
-  const [topics, setTopics] = React.useState([]);
-  const [isLogged, setIsLogged] = React.useState(false);
-  const [refresh, setRefresh] = React.useState(false);
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const [topics, setTopics] = useState([]);
+  const [isLogged, setIsLogged] = useState(false);
+  const [onRefresh, setRefresh] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       const token = await AsyncStorage.getItem("userToken");
-      if (token !== null) {
-        console.log(token + " is logged");
-        setIsLogged(true);
-      } else {
-        setIsLogged(false);
-      }
+      setIsLogged(token !== null);
     };
 
-    checkLoginStatus();
-
-    getAllTopics().then((res) => {
+    const fetchTopics = async () => {
+      const res = await getTopics(currentPage);
       setTopics(res.content);
-      console.log(res.content);
-    });
-  }, [isLogged]);
+      setTotalPages(res.totalPages);
+    };
+    
+    checkLoginStatus();
+    fetchTopics();
+  }, [isLogged, currentPage, onRefresh]);
 
-  useEffect(() => {
-    if (refresh) {
-      getAllTopics().then((res) => {
-        setTopics(res.content);
-        console.log(res.content);
-      });
-      setRefresh(false);
-    }
-  }, [refresh]);
-  // Rerender page api requests every time the page is loaded
+  const handlePrevPage = () => setCurrentPage((prev) => (prev > 0 ? prev - 1 : prev));
+  const handleNextPage = () => setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : prev));
+
+  const handleRefresh = (done) => {
+  
+    setRefresh(!onRefresh); 
+    if(done) done();
+  };
 
   return (
-    <View
-      className=""
-      style={{ backgroundColor: "#191919", height: height, width: width }}
-    >
+    <View style={styles.container}>
       <StatusBar style="light" />
-      <SafeAreaView style={{ backgroundColor: "#191919", marginBottom: -30 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginHorizontal: 8,
-            paddingBottom: 15,
-          }}
-        >
-          {isLogged ? (
-            <TouchableOpacity
-              className="rounded-xl p-1 "
-              style={{ marginLeft: -8 }}
-              onPress={() => router.navigate("/createtopic")}
-            >
-              <PlusCircleIcon size="38" strokeWidth={2.5} color="#80c04e" />
-            </TouchableOpacity>
-          ) : (
-            <View />
-          )}
-          <TouchableOpacity
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-            onPress={() => setRefresh(true)}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 24,
-                textAlign: "center",
-                fontWeight: "bold",
-              }}
-            >
-              {"Trending"}
-            </Text>
-          </TouchableOpacity>
-          {isLogged ? (
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <UserCircleIcon size="38" strokeWidth={2} color={"#80c04e"} />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity onPress={() => router.replace("/login")}>
-              <UserCircleIcon size="38" strokeWidth={2} color={"#80c04e"} />
-            </TouchableOpacity>
-          )}
-        </View>
+      <SafeAreaView style={styles.safeArea}>
+        <Header isLogged={isLogged} setModalVisible={setModalVisible} setRefresh={setRefresh} pageName={"Today"}/>
       </SafeAreaView>
-
-      <SearchBar />
-      <TopicList data={topics} />
-      <LogOutButton
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
+      <TopicListView topics={topics} path={"today"} onRefresh={handleRefresh}/>
+      <Footer
+        handlePrevPage={handlePrevPage}
+        handleNextPage={handleNextPage}
+        currentPage={currentPage}
+        totalPages={totalPages}
       />
+      <LogoutModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#191919",
+    height: height,
+    width: width,
+  },
+  safeArea: {
+    backgroundColor: "#191919",
+    marginBottom: -30,
+  },
+});

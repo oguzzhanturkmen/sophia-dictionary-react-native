@@ -21,6 +21,27 @@ import { useEffect } from "react";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 export default function UserEntries({ entries }) {
+  const parseContent = (content) => {
+    
+    const parts = content.split(/(\s#\w+)/g);
+  
+    return parts.filter(Boolean).map((part, index) => {
+      if (part.startsWith(' #')) {
+        return (
+          <Text key={index} style={{ color: '#80c04e' , fontWeight : "400" }}>
+            {part}
+          </Text>
+        );
+      } else {
+        
+        return (
+          <Text key={index} style={{ color: '#ffffff' }}>
+            {part}
+          </Text>
+        );
+      }
+    });
+  };
   const renderItem = ({ item, index }) => (
     <View
       style={[
@@ -29,8 +50,18 @@ export default function UserEntries({ entries }) {
       ]}
     >
       <View style={{ flex: 1 }}>
-        <Text style={styles.itemHeader}>{item.topicName}</Text>
-        <Text style={styles.itemText}>{item.entryContent}</Text>
+        <Text style={styles.itemHeader}>{item.entryTitle}</Text>
+        
+        <View
+          style={{
+            borderBottomColor: "#80c04e",
+            borderBottomWidth: 1,
+            width: width * 0.95,
+            marginBottom: 10,
+          }}
+        />
+
+        <Text style={styles.itemText}>{parseContent(item.entryContent)}</Text>
         <View
           style={{
             flexDirection: "row",
@@ -86,7 +117,7 @@ export default function UserEntries({ entries }) {
           <UserCircleIcon
             size={42}
             strokeWidth={1}
-            color="white"
+            color="#80c04e"
             style={{ marginRight: 10 }}
           />
         </View>

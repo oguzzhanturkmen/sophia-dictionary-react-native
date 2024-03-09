@@ -9,6 +9,8 @@ import Header from "../../../components/Screens/TrendingScreen/Header";
 import TopicListView from "../../../components/Screens/TrendingScreen/TopicListView";
 import LogoutModalComponent from "../../../components/Screens/TrendingScreen/LogoutModalComponent";
 import {getTopics} from "../../../api/topic"
+import SearchBar from "../../../components/Utils/SearchBar";
+import { getSearch } from "../../../api/search";
 
 
 const height = Dimensions.get("window").height;
@@ -17,10 +19,12 @@ const width = Dimensions.get("window").width;
 export default function HomePage() {
   const [topics, setTopics] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
-  const [refresh, setRefresh] = useState(false);
+  const [onRefresh, setRefresh] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false); 
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -29,25 +33,52 @@ export default function HomePage() {
     };
 
     const fetchTopics = async () => {
-      const res = await getTopics(currentPage);
-      setTopics(res.content);
-      setTotalPages(res.totalPages);
+      
+      let res;
+      if (isSearching && searchQuery) {
+        res = await getSearch(searchQuery, currentPage); 
+      } else {
+        res = await getTopics(currentPage);
+      }
+
+      if (res && Object.keys(res).length !== 0) {
+        setTopics(res.content);
+        setTotalPages(res.totalPages);
+      } else {
+        console.log('API call failed or returned no data');
+      }
     };
     
     checkLoginStatus();
     fetchTopics();
-  }, [isLogged, currentPage, refresh]);
+  }, [isLogged, currentPage, onRefresh, isSearching, searchQuery]);
 
-  const handlePrevPage = () => setCurrentPage((prev) => (prev > 0 ? prev - 1 : prev));
-  const handleNextPage = () => setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : prev));
+  useEffect(() => {
+    
+    setIsSearching(searchQuery.length > 2);
+
+    
+    setCurrentPage(0);
+  }, [searchQuery]);
+
+  const handleRefresh = (done) => {
+  
+    setRefresh(!onRefresh); 
+    if(done) done();
+  };
+
+  const handlePrevPage = () => setCurrentPage(prev => (prev > 0 ? prev - 1 : prev));
+  const handleNextPage = () => setCurrentPage(prev => (prev < totalPages - 1 ? prev + 1 : prev));
+
 
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
       <SafeAreaView style={styles.safeArea}>
-        <Header isLogged={isLogged} setModalVisible={setModalVisible} setRefresh={setRefresh} />
+        <Header isLogged={isLogged} setModalVisible={setModalVisible} setRefresh={setRefresh} pageName={"Trending"} />
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery}></SearchBar>
       </SafeAreaView>
-      <TopicListView topics={topics} />
+      <TopicListView topics={topics} path={"trending"} onRefresh={handleRefresh} />
       <Footer
         handlePrevPage={handlePrevPage}
         handleNextPage={handleNextPage}

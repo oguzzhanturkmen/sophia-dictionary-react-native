@@ -5,12 +5,8 @@ import { Dimensions } from 'react-native'
 
 const height = Dimensions.get('window').height
     const width = Dimensions.get('window').width
-export default function SearchBar() {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [filteredData, setFilteredData] = useState([]);
-    
-  
-    
+export default function SearchBar({setSearchQuery, searchQuery,}) {
+   
     
   
     return (
@@ -19,12 +15,11 @@ export default function SearchBar() {
           style={styles.textInputStyle}
           value={searchQuery}
           placeholder="Topic, #entry or @user"
-            placeholderTextColor="white"
+          placeholderTextColor="white"
           underlineColorAndroid="transparent"
+          onChangeText={(text) => setSearchQuery(text)}
           
         />
-        
-      
     );
   }
   

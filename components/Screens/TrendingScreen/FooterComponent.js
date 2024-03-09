@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     position: "absolute",
     alignItems: "center",
-    bottom: height * 0.085,
+    bottom: height * 0.0935,
     zIndex: 100,
   },
   pageText: { color: "white", fontSize: 16, fontWeight: "bold" },

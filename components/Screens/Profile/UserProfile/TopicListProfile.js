@@ -2,14 +2,13 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import React, { useEffect } from 'react'
 import { Dimensions } from 'react-native';
 import { Link, router } from 'expo-router';
-import { getAllTopics } from '../../api/api';
-import { RefreshControl } from 'react-native';
+
 
 
 
   const height = Dimensions.get('window').height
   const width = Dimensions.get('window').width
-export default function TopicList({ data , path}) {
+export default function TopicListProfile({ data , path}) {
   
   
 

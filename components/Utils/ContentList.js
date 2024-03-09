@@ -18,6 +18,7 @@ import { HandThumbUpIcon as HandThumbUpIconSolid , HandThumbDownIcon as HandThum
 import { getEntries, likeAnEntry, dislikeAnEntry } from "../../api/entry";
 import { useState } from "react";
 import { useEffect } from "react";
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -42,6 +43,7 @@ export default function ContentList({ id }) {
       setTopicInformation(data.topic);
     
     };
+  
 
     fetchData();
   }, [refresh]);
@@ -52,8 +54,16 @@ export default function ContentList({ id }) {
       handleRefresh();
     }
     );
+    const options = {
+      enableVibrateFallback: true,
+      ignoreAndroidSystemSettings: true
+    };
+    // "impactLight", "impactMedium", "impactHeavy", "selection", "notificationSuccess", etc.
+    ReactNativeHapticFeedback.trigger("selection", options);
+  };
     
-  }
+  
+
   const handleDislike = (entryId) => {
     dislikeAnEntry(entryId).then((data) => {
       handleRefresh();
@@ -62,6 +72,27 @@ export default function ContentList({ id }) {
     
   }
 
+  const parseContent = (content) => {
+    
+    const parts = content.split(/(\s#\w+)/g);
+  
+    return parts.filter(Boolean).map((part, index) => {
+      if (part.startsWith(' #')) {
+        return (
+          <Text key={index} style={{ color: '#80c04e' , fontWeight : "400" }}>
+            {part}
+          </Text>
+        );
+      } else {
+        
+        return (
+          <Text key={index} style={{ color: '#ffffff' }}>
+            {part}
+          </Text>
+        );
+      }
+    });
+  };
 
 
     
@@ -77,7 +108,7 @@ export default function ContentList({ id }) {
       ]}
     >
       <View style={{ flex: 1 }}>
-        <Text style={styles.itemText}>{item.entryContent}</Text>
+      <Text style={styles.itemText}>{parseContent(item.entryContent)}</Text>
         <View
           style={{
             flexDirection: "row",

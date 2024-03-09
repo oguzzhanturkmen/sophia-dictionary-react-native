@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
-import {
-    getUserDataForOtherProfiles,
-    
-    getFollowUser,
-    
-    getLikedEntries
-  } from '../../../api/api';
+
   import {getUserProfile, getIsFollowed , getCreatedEntriesByUser, getLikedEntriesByUser, getCreatedTopicsByUser,followOrUnfollow} from '../../../api/user';
 import ProfileHeader from '../../../components/Screens/Profile/ProfileHeader';
 import UserProfileInfo from '../../../components/Screens/Profile/UserProfileInfo';
@@ -18,6 +12,7 @@ import TopicList from '../../../components/Utils/TopicList';
 import ProfileScreenHeader from '../../../components/Screens/Profile/ProfileScreenHeader';
 
 import {router} from 'expo-router';
+import TopicListViewProfile from '../../../components/Screens/Profile/UserProfile/TopicListViewProfile'
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,6 +24,7 @@ const Profile = () => {
     const [entries, setEntries] = useState([]);
     const [topics, setTopics] = useState([]);
     const [likedEntries, setLikedEntries] = useState([]);
+    const [onRefresh, setRefresh] = useState(false);
 
     
   
@@ -70,6 +66,7 @@ const Profile = () => {
       try {
         if (section === "topics") {
           const topicsData = await getCreatedTopicsByUser(id);
+          console.log(topicsData);
           setTopics(topicsData);
         } else if (section === "favorites") {
           const likedEntriesData = await getLikedEntriesByUser(id);
@@ -85,7 +82,7 @@ const Profile = () => {
         case 'entries':
           return <UserEntries entries={entries} />;
         case 'topics':
-          return <TopicList data={topics} />;
+          return <TopicListViewProfile topics={topics} path={"trending"} onRefresh={handleRefresh}/>;
         case 'favorites':
           return <UserEntries entries={likedEntries} />;
         default:
@@ -99,6 +96,11 @@ const Profile = () => {
     const onNavigateFollowings = () => {
       router.push(`profiles/${id}/following`, { id: id });
     }
+    const handleRefresh = (done) => {
+  
+      setRefresh(!onRefresh); 
+      if(done) done();
+    };
   return (
     <ScrollView style={styles.container}>
       <ProfileScreenHeader router={router} username={userInformation.username}/>

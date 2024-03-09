@@ -32,7 +32,7 @@ export const logoutUser = async () => {
     // Navigate to your app's login flow here. For example:
     // navigation.navigate('Login');
     console.log('User logged out');
-    router.replace('/');
+    
   } catch (error) {
     console.error('Logout error:', error);
     // Handle logout failure (e.g., show an error message)

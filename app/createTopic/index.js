@@ -28,11 +28,20 @@ const CreateTopic = () => {
     
      
   };
-
+  
    const handlePostTopic = async (data) => {
     try {
       const response = await postTopic(data);
-      router.navigate("trending/" + response.object.topicId);
+      router.replace({
+        pathname: `trending/${response.object.topicId}` ,
+        refresh: true,
+        params: {
+          name: response.object.topicName,
+          
+        }
+        ,
+
+     });
     }
     catch (error) {
       console.log(error);

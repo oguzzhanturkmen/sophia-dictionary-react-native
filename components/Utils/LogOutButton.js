@@ -12,7 +12,7 @@ export default function LogOutButton({modalVisible, setModalVisible}) {
   return (
     <Modal
   
-  animationType="fade"
+  animationType="slide"
   transparent={true}
   visible={modalVisible}
   onRequestClose={() => {
@@ -42,7 +42,7 @@ export default function LogOutButton({modalVisible, setModalVisible}) {
 }
 
 const styles = StyleSheet.create({
-    // Existing styles...
+    
     modalOverlay: {
       flex: 1,
       position: 'absolute',
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
       
     },
     modalContent: {
-      backgroundColor: '#333',
+      backgroundColor: '#2f2f31',
         position: 'absolute',
         width: width * 0.3,
         height: height * 0.08,
