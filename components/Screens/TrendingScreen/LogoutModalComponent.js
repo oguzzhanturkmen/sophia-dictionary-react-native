@@ -1,16 +1,18 @@
 import React from "react";
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { logoutUser } from "../../../api/auth"; 
+import { router } from 'expo-router';
 const LogOutModal = ({ modalVisible, setModalVisible }) => {
   const handleLogout = async () => {
-    await logoutUser(); // Implement logout logic as needed
-    setModalVisible(false); // Close modal after logging out
-    // Additional steps after logout (e.g., navigate to login screen) can be added here
+    await logoutUser(); 
+    setModalVisible(false); 
+    router.replace('/');
+    
   };
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
@@ -39,11 +41,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+    backgroundColor: "rgba(0,0,0,0.5)", 
+    
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#2f2f31",
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -65,13 +68,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    marginHorizontal: 10, // Adds spacing between buttons
+    marginHorizontal: 10, 
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "gray",
   },
   buttonLogout: {
-    backgroundColor: "#f44336", // Red color for logout to indicate a potentially destructive action
+    backgroundColor: "gray", 
   },
   textStyle: {
     color: "white",
@@ -81,6 +84,7 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+    color: "white",
   },
 });
 

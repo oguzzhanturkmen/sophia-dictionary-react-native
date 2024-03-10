@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, TextInput, Button, Dimensions, KeyboardAvoidingView, ScrollView } from 'react-native';
-import { postEntry } from '../../api/api';
+import { postEntry } from '../../api/entry';
 import { Platform } from 'react-native';
 
 
@@ -16,7 +16,7 @@ export default function PostModal( {isModalVisible, setModalVisible , setInputTe
       content : inputText,
       tags : ""
     }
-    await postEntry(data, id).then((res) => {
+    await postEntry(id, data).then((res) => {
       console.log(res)
       setRefresh();
       
@@ -42,7 +42,7 @@ export default function PostModal( {isModalVisible, setModalVisible , setInputTe
       <View style={{height : 20}}></View>
     <Text style={{color : 'white', fontSize : 20, fontWeight : 'bold'}}>Your Post</Text>
     <TouchableOpacity onPress={() => setModalVisible(false)}>
-      <Text style={{color : 'white', fontSize : 20, fontWeight : 'bold'}}>X</Text>
+      <Text style={{color : 'white', fontSize : 30, fontWeight : 'bold'}}>X</Text>
     </TouchableOpacity>
     </View>
     <View >
@@ -61,10 +61,9 @@ export default function PostModal( {isModalVisible, setModalVisible , setInputTe
     <TouchableOpacity
       style={styles.postButton}
       onPress={() => {
-        console.log(inputText); // Here, handle the posting logic
-        setInputText(''); // Clear input after posting
-        setModalVisible(false); // Close modal
-        setRefresh(); // Refresh the page
+        console.log(inputText); 
+        setInputText(''); 
+        setModalVisible(false); 
         handleSubmit(topicId);
       }}
     >
@@ -111,9 +110,9 @@ const styles = StyleSheet.create({
     },
     postButton: {
       position: 'absolute',
-      bottom: 40,
-      left: 20,
-      right: 20,
+      bottom: height * 0.07,
+      left: width * 0.05,
+      right: width * 0.05,
       backgroundColor: '#80c04e', // Button background color
       padding: 10,
       borderRadius: 10,

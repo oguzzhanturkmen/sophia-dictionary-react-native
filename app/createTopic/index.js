@@ -14,6 +14,9 @@ import TitleInput from "../../components/Screens/CreateTopic/TitleInput";
 import ContentInput from "../../components/Screens/CreateTopic/ContentInput";
 import PostButton from "../../components/Screens/CreateTopic/PostButton";
 import { router } from "expo-router";
+import { Dimensions } from "react-native";
+
+const [width, height] = [Dimensions.get("window").width, Dimensions.get("window").height];
 const CreateTopic = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -28,11 +31,20 @@ const CreateTopic = () => {
     
      
   };
-
+  
    const handlePostTopic = async (data) => {
     try {
       const response = await postTopic(data);
-      router.navigate("trending/" + response.object.topicId);
+      router.replace({
+        pathname: `trending/${response.object.topicId}` ,
+        refresh: true,
+        params: {
+          name: response.object.topicName,
+          
+        }
+        ,
+
+     });
     }
     catch (error) {
       console.log(error);
@@ -48,6 +60,14 @@ const CreateTopic = () => {
       </SafeAreaView>
       <View style={styles.innerContainer}>
         <TitleInput title={title} setTitle={setTitle} />
+        <View
+          style={{
+            borderBottomColor: "#80c04e",
+            borderBottomWidth: 0.3,
+            width: width * 0.90,
+            marginBottom: 10,
+          }}
+        />
         <ContentInput content={content} setContent={setContent} />
         <PostButton onPress={handleSubmit} />
       </View>

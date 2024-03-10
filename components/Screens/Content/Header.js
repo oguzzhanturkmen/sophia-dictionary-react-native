@@ -10,7 +10,7 @@ const Header = ({ name, onRefresh, onOpenModal }) => {
 
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back("/")}>
+      <TouchableOpacity style={styles.backButton} onPress={() => router.back({refresh : true} ) }>
         <ChevronLeftIcon size="38" strokeWidth={2.5} color="#80c04e" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.titleContainer} onPress={onRefresh}>

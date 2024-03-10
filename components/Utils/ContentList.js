@@ -18,6 +18,8 @@ import { HandThumbUpIcon as HandThumbUpIconSolid , HandThumbDownIcon as HandThum
 import { getEntries, likeAnEntry, dislikeAnEntry } from "../../api/entry";
 import { useState } from "react";
 import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -26,6 +28,8 @@ export default function ContentList({ id }) {
 
   const [content, setContent] = useState([]);
   const [topicInformation, setTopicInformation] = useState({});
+  const [loggedInUser, setLoggedInUser] = useState("");
+  
 
   const [refresh, setRefresh] = useState(0);
 
@@ -42,8 +46,15 @@ export default function ContentList({ id }) {
       setTopicInformation(data.topic);
     
     };
+    const getLoggedInUser = async () => {
+      const user = await AsyncStorage.getItem("username");
+      setLoggedInUser(user);
+    };
+    getLoggedInUser();
 
+    console.log(loggedInUser);
     fetchData();
+    
   }, [refresh]);
 
   const handleLike = (entryId) => {
@@ -53,7 +64,10 @@ export default function ContentList({ id }) {
     }
     );
     
-  }
+  };
+    
+  
+
   const handleDislike = (entryId) => {
     dislikeAnEntry(entryId).then((data) => {
       handleRefresh();
@@ -62,6 +76,27 @@ export default function ContentList({ id }) {
     
   }
 
+  const parseContent = (content) => {
+    
+    const parts = content.split(/(\s#\w+)/g);
+  
+    return parts.filter(Boolean).map((part, index) => {
+      if (part.startsWith(' #')) {
+        return (
+          <Text key={index} style={{ color: '#80c04e' , fontWeight : "400" }}>
+            {part}
+          </Text>
+        );
+      } else {
+        
+        return (
+          <Text key={index} style={{ color: '#ffffff' }}>
+            {part}
+          </Text>
+        );
+      }
+    });
+  };
 
 
     
@@ -77,7 +112,7 @@ export default function ContentList({ id }) {
       ]}
     >
       <View style={{ flex: 1 }}>
-        <Text style={styles.itemText}>{item.entryContent}</Text>
+      <Text style={styles.itemText}>{parseContent(item.entryContent)}</Text>
         <View
           style={{
             flexDirection: "row",
@@ -108,9 +143,14 @@ export default function ContentList({ id }) {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() =>
+              onPress={() => item.entryAuthor !== loggedInUser ?
                 router.navigate({
                   pathname: `profiles/${item.entryAuthorId}`,
+                  params: {
+                    id: item.entryAuthorId,
+                  },
+                }) : router.push({
+                  pathname: `/userProfile`,
                   params: {
                     id: item.entryAuthorId,
                   },
@@ -133,7 +173,7 @@ export default function ContentList({ id }) {
           <UserCircleIcon
             size={42}
             strokeWidth={1}
-            color="white"
+            color="#80c04e"
             style={{ marginRight: 10 }}
           />
         </View>

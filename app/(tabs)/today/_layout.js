@@ -5,5 +5,9 @@ export default function HomeLayout() {
   screenOptions={{
     headerShown: false,
   }}
-  />;
+  
+  >
+     
+
+    </Stack>;
 }

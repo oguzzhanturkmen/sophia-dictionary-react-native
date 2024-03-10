@@ -35,6 +35,7 @@ const FollowerItem = ({ username, bio, imageUrl, userId, entryCount }) => (
 
 const FollowList = ({ data }) => {
   return (
+    
     <FlatList
       data={data}
       keyExtractor={(item) => item.userId}
@@ -49,6 +50,7 @@ const FollowList = ({ data }) => {
       )}
     />
   );
+  ;
 };
 
 const styles = StyleSheet.create({

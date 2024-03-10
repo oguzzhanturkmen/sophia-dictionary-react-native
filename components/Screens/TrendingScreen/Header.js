@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { PlusCircleIcon, UserCircleIcon } from "react-native-heroicons/outline";
 import { router } from "expo-router";
 
-const Header = ({ isLogged, setModalVisible, setRefresh }) => {
+const Header = ({ isLogged, setModalVisible, setRefresh, pageName }) => {
   return (
     <View style={styles.headerContainer}>
       {isLogged ? (
@@ -20,7 +20,7 @@ const Header = ({ isLogged, setModalVisible, setRefresh }) => {
         style={styles.titleContainer}
         onPress={() => setRefresh(true)}
       >
-        <Text style={styles.titleText}>{"Trending"}</Text>
+        <Text style={styles.titleText}>{pageName}</Text>
       </TouchableOpacity>
       {isLogged ? (
         <TouchableOpacity
