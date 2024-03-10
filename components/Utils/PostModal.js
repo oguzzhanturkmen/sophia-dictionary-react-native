@@ -110,9 +110,9 @@ const styles = StyleSheet.create({
     },
     postButton: {
       position: 'absolute',
-      bottom: 40,
-      left: 20,
-      right: 20,
+      bottom: height * 0.07,
+      left: width * 0.05,
+      right: width * 0.05,
       backgroundColor: '#80c04e', // Button background color
       padding: 10,
       borderRadius: 10,

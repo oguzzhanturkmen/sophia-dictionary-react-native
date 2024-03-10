@@ -29,7 +29,7 @@ export default function TopicList({ data , path}) {
           ]}
         >
             
-                <Text style={styles.itemText}>{item.topicName.length > 65 ? item.topicName.slice(0,65) + "..." : item.topicName}</Text>
+                <Text style={styles.itemText}>{item.topicName?.length > 65 ? item.topicName.slice(0,65) + "..." : item.topicName}</Text>
                 <Text style={styles.counterText}>{item.entryCount}</Text>
             
           

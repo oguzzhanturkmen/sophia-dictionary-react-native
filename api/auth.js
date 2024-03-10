@@ -14,8 +14,12 @@ export const authenticateUser = async (username, password) => {
       password,
     });
     const { token } = response.data;
+    const  usernameX  = response.data.username;
     console.log('User token:', token);
+    console.log('Username:', usernameX);
     await AsyncStorage.setItem('userToken', token);
+    await AsyncStorage.setItem('username', usernameX);
+
     return true;
     // Navigate to your app's main flow here. For example:
     // navigation.navigate('Home');
@@ -29,6 +33,7 @@ export const authenticateUser = async (username, password) => {
 export const logoutUser = async () => {
   try {
     await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('username');
     // Navigate to your app's login flow here. For example:
     // navigation.navigate('Login');
     console.log('User logged out');

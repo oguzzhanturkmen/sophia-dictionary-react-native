@@ -69,6 +69,7 @@ const Profile = () => {
           console.log(topicsData);
           setTopics(topicsData);
         } else if (section === "favorites") {
+          console.log("favorites");
           const likedEntriesData = await getLikedEntriesByUser(id);
           setLikedEntries(likedEntriesData);
         }

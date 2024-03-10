@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Dimensions } from "react-native";
 import { Link, router } from "expo-router";
 import { UserCircleIcon } from "react-native-heroicons/outline";
@@ -14,15 +14,16 @@ import {
   HandThumbDownIcon,
   ShareIcon,
 } from "react-native-heroicons/outline";
-import { getEntries } from "../../api/api";
+
 import { useState } from "react";
-import { useEffect } from "react";
+import { HandThumbUpIcon as HandThumbUpIconSolid , HandThumbDownIcon as HandThumbDownIconSolid} from "react-native-heroicons/solid";
+import { getEntries, likeAnEntry, dislikeAnEntry } from "../../api/entry";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 export default function UserEntries({ entries }) {
   const parseContent = (content) => {
-    
+
     const parts = content.split(/(\s#\w+)/g);
   
     return parts.filter(Boolean).map((part, index) => {
@@ -42,6 +43,30 @@ export default function UserEntries({ entries }) {
       }
     });
   };
+  const [refresh, setRefresh] = useState(0);
+  const handleLike = (entryId) => {
+    
+    likeAnEntry(entryId).then((data) => {
+      handleRefresh();
+    }
+    );
+    
+  };
+    
+  const handleDislike = (entryId) => {
+    dislikeAnEntry(entryId).then((data) => {
+      handleRefresh();
+    }
+    );
+    
+    
+  }
+  const handleRefresh = () => {
+    setRefresh((prevKey) => prevKey + 1);
+  };
+  
+  
+  
   const renderItem = ({ item, index }) => (
     <View
       style={[
@@ -50,17 +75,15 @@ export default function UserEntries({ entries }) {
       ]}
     >
       <View style={{ flex: 1 }}>
+        <TouchableOpacity onPress={() => router.push({
+          pathname: `trending/${item.topicId}`,
+          params: {
+            
+            name : item.entryTitle
+          },
+        })}>
         <Text style={styles.itemHeader}>{item.entryTitle}</Text>
-        
-        <View
-          style={{
-            borderBottomColor: "#80c04e",
-            borderBottomWidth: 1,
-            width: width * 0.95,
-            marginBottom: 10,
-          }}
-        />
-
+        </TouchableOpacity>
         <Text style={styles.itemText}>{parseContent(item.entryContent)}</Text>
         <View
           style={{
@@ -94,9 +117,9 @@ export default function UserEntries({ entries }) {
             <TouchableOpacity
               onPress={() =>
                 router.navigate({
-                  pathname: `userProfile/${item.entryOwnerId}`,
+                  pathname: `profiles/${item.entryAuthorId}`,
                   params: {
-                    id: item.entryOwnerId,
+                    id: item.entryAuthorId,
                   },
                 })
               }
@@ -109,7 +132,7 @@ export default function UserEntries({ entries }) {
                   color: "#80c04e",
                 }}
               >
-                {item.entryOwner}
+                {item.entryAuthor}
               </Text>
             </TouchableOpacity>
           </View>
@@ -130,13 +153,26 @@ export default function UserEntries({ entries }) {
             marginRight: 10,
           }}
         >
+         
           <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <HandThumbUpIcon
+            <TouchableOpacity onPress={() => handleLike(item.entryId)}>
+            {item.liked ? (
+            <HandThumbUpIconSolid
+            size={20}
+            strokeWidth={1}
+            color="white"
+            style={{ marginRight: 10 }}
+            />)  : 
+              (
+              <HandThumbUpIcon
               size={20}
               strokeWidth={1}
               color="white"
               style={{ marginRight: 10 }}
             />
+            )}
+            </TouchableOpacity>
+            
             <Text
               style={{
                 color: "white",
@@ -149,12 +185,23 @@ export default function UserEntries({ entries }) {
             </Text>
           </View>
           <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <HandThumbDownIcon
-              size={20}
-              strokeWidth={1}
-              color="white"
-              style={{ marginRight: 10 }}
-            />
+            <TouchableOpacity onPress={() => handleDislike(item.entryId)}>
+            {item.disliked ? (
+              <HandThumbDownIconSolid
+                size={20}
+                strokeWidth={1}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
+            ) : (
+              <HandThumbDownIcon
+                size={20}
+                strokeWidth={1}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
+            )}
+            </TouchableOpacity>
             <Text
               style={{
                 color: "white",

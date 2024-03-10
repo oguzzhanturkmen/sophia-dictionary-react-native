@@ -11,6 +11,8 @@ import LogoutModalComponent from "../../../components/Screens/TrendingScreen/Log
 import {getTopics} from "../../../api/topic"
 import SearchBar from "../../../components/Utils/SearchBar";
 import { getSearch } from "../../../api/search";
+import FollowList from "../../../components/Utils/FollowList";
+import { Text } from "react-native";
 
 
 const height = Dimensions.get("window").height;
@@ -25,7 +27,11 @@ export default function HomePage() {
   const [totalPages, setTotalPages] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false); 
+  const [searchType, setSearchType] = useState("topic");
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [users, setUsers] = useState([]);
 
+  
   useEffect(() => {
     const checkLoginStatus = async () => {
       const token = await AsyncStorage.getItem("userToken");
@@ -41,22 +47,36 @@ export default function HomePage() {
         res = await getTopics(currentPage);
       }
 
-      if (res && Object.keys(res).length !== 0) {
+      if (res && Object.keys(res).length !== 0 && res.content.length > 0) {
+        if(searchType === "user"){
+          setUsers(res.content);
+          setTotalPages(res.totalPages);
+          setIsEmpty(false);
+        
+        }
+        else{
         setTopics(res.content);
         setTotalPages(res.totalPages);
+        setIsEmpty(false);
+        console.log('API call successful');
+        setUsers([]);
+      }
+        
       } else {
+        setIsEmpty(true);
         console.log('API call failed or returned no data');
       }
     };
     
     checkLoginStatus();
     fetchTopics();
-  }, [isLogged, currentPage, onRefresh, isSearching, searchQuery]);
+  }, [isLogged, currentPage, onRefresh, isSearching]);
 
   useEffect(() => {
     
-    setIsSearching(searchQuery.length > 2);
-
+    setIsSearching(searchQuery.length > 3);
+    if(searchQuery.startsWith("@")) setSearchType("user");
+    else setSearchType("topic");
     
     setCurrentPage(0);
   }, [searchQuery]);
@@ -66,6 +86,16 @@ export default function HomePage() {
     setRefresh(!onRefresh); 
     if(done) done();
   };
+  const handleRenderContentForSearch = () => {
+    if(isEmpty) {
+      return <View style={styles.emptyContainer}><Text style={styles.emptyText}>No results found</Text></View>;
+    }
+    else if(searchType === "user") {
+      return <FollowList data={users} />;
+    }
+    return <TopicListView topics={topics} path={"trending"} onRefresh={handleRefresh} />;
+  };
+
 
   const handlePrevPage = () => setCurrentPage(prev => (prev > 0 ? prev - 1 : prev));
   const handleNextPage = () => setCurrentPage(prev => (prev < totalPages - 1 ? prev + 1 : prev));
@@ -78,7 +108,8 @@ export default function HomePage() {
         <Header isLogged={isLogged} setModalVisible={setModalVisible} setRefresh={setRefresh} pageName={"Trending"} />
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery}></SearchBar>
       </SafeAreaView>
-      <TopicListView topics={topics} path={"trending"} onRefresh={handleRefresh} />
+      {handleRenderContentForSearch()}
+      
       <Footer
         handlePrevPage={handlePrevPage}
         handleNextPage={handleNextPage}
@@ -99,5 +130,14 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: "#191919",
     marginBottom: -30,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    color: "white",
+    fontSize: 20,
   },
 });
