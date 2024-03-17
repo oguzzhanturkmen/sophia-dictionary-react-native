@@ -3,24 +3,25 @@ import { View, StyleSheet, Dimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getAllTopics } from "../../../api/api";
-import Footer from "../../../components/Screens/TrendingScreen/FooterComponent";
-import Header from "../../../components/Screens/TrendingScreen/Header";
-import TopicListView from "../../../components/Screens/TrendingScreen/TopicListView";
-import LogoutModalComponent from "../../../components/Screens/TrendingScreen/LogoutModalComponent";
-import {getTopics} from "../../../api/topic"
-import SearchBar from "../../../components/Utils/SearchBar";
-import { getSearch } from "../../../api/search";
-import FollowList from "../../../components/Utils/FollowList";
+import { getAllTopics } from "../../../../api/api";
+import Footer from "../../../../components/Screens/TrendingScreen/FooterComponent";
+import Header from "../../../../components/Screens/TrendingScreen/Header";
+import TopicListView from "../../../../components/Screens/TrendingScreen/TopicListView";
+import LogoutModalComponent from "../../../../components/Screens/TrendingScreen/LogoutModalComponent";
+import {getTopics, getTopicsByChannel} from "../../../../api/topic"
+import SearchBar from "../../../../components/Utils/SearchBar";
+import { getSearch } from "../../../../api/search";
+import FollowList from "../../../../components/Utils/FollowList";
 import { Text } from "react-native";
 import { useContext } from "react";
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from "../../../../context/AuthContext";
+import { router, useLocalSearchParams } from "expo-router";
 
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
-export default function HomePage() {
+export default function Channel() {
   const [topics, setTopics] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
   const [onRefresh, setRefresh] = useState(false);
@@ -35,6 +36,8 @@ export default function HomePage() {
 
   const { user, logOut } = useContext(AuthContext);
 
+  const { name } = useLocalSearchParams();
+
   
   useEffect(() => {
     
@@ -46,7 +49,9 @@ export default function HomePage() {
         res = await getSearch(searchQuery.startsWith("#") ? searchQuery.replace("#", "%23") : searchQuery, currentPage); 
         console.log(searchQuery.replace("#", "%23"));
       } else {
-        res = await getTopics(currentPage);
+        res = await getTopicsByChannel(name, currentPage);
+        console.log(name);
+        console.log(res);
       }
 
       if (res && Object.keys(res).length !== 0 && res.content.length > 0) {
@@ -95,7 +100,7 @@ export default function HomePage() {
     else if(searchType === "user") {
       return <FollowList data={users} />;
     }
-    return <TopicListView topics={topics} path={"trending"} onRefresh={handleRefresh} />;
+    return <TopicListView topics={topics} path={"channels/" + name} onRefresh={handleRefresh} />;
   };
 
 
@@ -107,7 +112,7 @@ export default function HomePage() {
     <View style={styles.container}>
       <StatusBar style="light" />
       <SafeAreaView style={styles.safeArea}>
-        <Header isLogged={!!user} setModalVisible={setModalVisible} setRefresh={setRefresh} pageName={"Trending"} />
+        <Header isLogged={!!user} setModalVisible={setModalVisible} setRefresh={setRefresh} pageName={name} />
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery}></SearchBar>
       </SafeAreaView>
       {handleRenderContentForSearch()}

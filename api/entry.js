@@ -1,6 +1,6 @@
 import { apiCallAuthorized, apiPostCall, apiCallUnauthorized } from "./requests";
 
-const baseURL = 'http://192.168.111.7:8084/entry';
+const baseURL = 'http://192.168.111.3:8084/entry';
 
 // For GET request to get all entries by topic
 const getAllEntriesByTopic = (topicId, page) => `${baseURL}/${topicId}?page=${page}`;

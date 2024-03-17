@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { PlusCircleIcon, Cog8ToothIcon } from 'react-native-heroicons/outline';
 import { router } from 'expo-router';
 
-const ProfileHeader = ({ username, setRefresh }) => {
+const ProfileHeader = ({ username, setRefresh, onPressSettingsButton }) => {
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity
@@ -19,7 +19,7 @@ const ProfileHeader = ({ username, setRefresh }) => {
         <Text style={styles.username}>{username}</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => setModalVisible(true)}
+        onPress= {onPressSettingsButton}
         style={{ marginRight: 8 }}
       >
         <Cog8ToothIcon size="38" strokeWidth={2} color={"#80c04e"} />

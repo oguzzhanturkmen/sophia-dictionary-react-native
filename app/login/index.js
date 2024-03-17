@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import {  router } from 'expo-router'
 import { authenticateUser } from '../../api/auth';
+import { AuthContext } from '../../context/AuthContext';
+import { useContext } from 'react';
 
 
 import { Dimensions } from 'react-native';
@@ -24,19 +26,21 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(true);
 
+  const { logIn } = useContext(AuthContext);
+
   const handleLogin = async () => {
-    const success = await authenticateUser(username, password);
-    if (success) {
+    try {
+      await logIn({ username, password });
+      // Login successful
       console.log('Login successful');
-      // Assuming you have a way to navigate using expo-router or another navigation solution
-      router.push('/'); // Update this line to match your actual navigation logic
-      
-    } else {
-      console.log('Login failed');
-      setIsLoggingIn(false);
-      // Handle login failure (e.g., display an error message)
+      router.replace('/'); // Navigate to the home screen, adjust the route as needed
+    } catch (error) {
+      // Login failed
+      console.error('Login failed', error);
+      setIsLoggingIn(false); // Update the state to reflect the failed login attempt
     }
-  };  
+  };
+  
 
   
 

@@ -1,7 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { router } from "expo-router";
 
 const ProfileActions = ({ onEditPress, onSharePress }) => {
+
+  
+  
   return (
     <View style={styles.actionsContainer}>
       <TouchableOpacity

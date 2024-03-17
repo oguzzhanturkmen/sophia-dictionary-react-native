@@ -1,6 +1,6 @@
 import { apiCallAuthorized, apiPostCall, apiCallUnauthorized } from "./requests";
 
-const baseURL = 'http://192.168.111.7:8084/user';
+const baseURL = 'http://192.168.111.3:8084/user';
 
 // Get user profile by ID
 const getUserProfileById = (id) => `${baseURL}/profile/${id}`;

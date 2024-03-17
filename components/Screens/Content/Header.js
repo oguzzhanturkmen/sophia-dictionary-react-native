@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 
 const width = Dimensions.get('window').width;
 
-const Header = ({ name, onRefresh, onOpenModal }) => {
+const Header = ({ name, onRefresh, onOpenModal, isLogged }) => {
   const router = useRouter();
 
   return (
@@ -18,9 +18,11 @@ const Header = ({ name, onRefresh, onOpenModal }) => {
           {name?.length > 74 ? name.substring(0, 74) + "..." : name}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={onOpenModal}>
-        <PencilSquareIcon size="38" strokeWidth={2} color={"#80c04e"} />
-      </TouchableOpacity>
+      {isLogged && (
+        <TouchableOpacity onPress={onOpenModal}>
+          <PencilSquareIcon size="38" strokeWidth={2} color={"#80c04e"} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

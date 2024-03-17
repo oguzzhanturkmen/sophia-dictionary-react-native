@@ -18,10 +18,15 @@ import {
 import { useState } from "react";
 import { HandThumbUpIcon as HandThumbUpIconSolid , HandThumbDownIcon as HandThumbDownIconSolid} from "react-native-heroicons/solid";
 import { getEntries, likeAnEntry, dislikeAnEntry } from "../../api/entry";
-
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 export default function UserEntries({ entries }) {
+
+  const username  = useContext(AuthContext).user.username;
+  
+
   const parseContent = (content) => {
 
     const parts = content.split(/(\s#\w+)/g);
@@ -76,7 +81,7 @@ export default function UserEntries({ entries }) {
     >
       <View style={{ flex: 1 }}>
         <TouchableOpacity onPress={() => router.push({
-          pathname: `trending/${item.topicId}`,
+          pathname: `(tabs)/trending/${item.topicId}`,
           params: {
             
             name : item.entryTitle
@@ -115,13 +120,13 @@ export default function UserEntries({ entries }) {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() =>
+              onPress={() => item.entryAuthor !== username ?
                 router.navigate({
                   pathname: `profiles/${item.entryAuthorId}`,
                   params: {
                     id: item.entryAuthorId,
                   },
-                })
+                }) : null
               }
             >
               <Text

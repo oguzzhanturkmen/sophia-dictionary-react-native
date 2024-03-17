@@ -10,6 +10,7 @@ import UserEntries from "../../../components/Utils/UserEntriesList";
 import ProfileInfo from "../../../components/Screens/Profile/UserProfile/ProfileInfo";
 import TopicList from "../../../components/Utils/TopicList";
 import {getUserProfile, getIsFollowed , getCreatedEntriesByUser, getLikedEntriesByUser, getCreatedTopicsByUser,getUsersProfileData} from '../../../api/user';
+import { router } from "expo-router";
 
 const { width, height } = Dimensions.get("window");
 
@@ -53,7 +54,7 @@ const Profile = () => {
       case 'entries':
         return <UserEntries entries={entries} />;
       case 'topics':
-        return <TopicList data={topics} />;
+        return <TopicList data={topics} path={"trending"} />;
       case 'favorites':
         return <UserEntries entries={likedEntries} />;
       default:
@@ -65,12 +66,12 @@ const Profile = () => {
     <View style={styles.container}>
     <StatusBar style="light" />
     <SafeAreaView style={{ backgroundColor: "#191919" }}>
-      <ProfileHeader username={userInformation.username} />
+      <ProfileHeader username={userInformation.username}  onPressSettingsButton = {() => router.push("userProfile/userSettings")} />
     </SafeAreaView>
     <ScrollView style={{ flex: 1 }}>
       <ProfileInfo userInformation={userInformation} />
       <UserProfileInfo username={userInformation.username} bio={userInformation.bio} />
-      <ProfileActions />
+      <ProfileActions onEditPress={() => router.push("userProfile/editProfile")} />
       <SectionTabs sectionSelected={sectionSelected} onSelectSection={selectSection} />
       {renderSectionContent()}
     </ScrollView>

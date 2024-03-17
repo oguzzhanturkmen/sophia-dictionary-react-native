@@ -2,9 +2,9 @@ import React from "react";
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { logoutUser } from "../../../api/auth"; 
 import { router } from 'expo-router';
-const LogOutModal = ({ modalVisible, setModalVisible }) => {
+const LogOutModal = ({ modalVisible, setModalVisible, logOut }) => {
   const handleLogout = async () => {
-    await logoutUser(); 
+    await logOut();
     setModalVisible(false); 
     router.replace('/');
     
