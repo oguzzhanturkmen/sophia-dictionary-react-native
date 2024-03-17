@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -15,20 +15,31 @@ import ContentInput from "../../components/Screens/CreateTopic/ContentInput";
 import PostButton from "../../components/Screens/CreateTopic/PostButton";
 import { router } from "expo-router";
 import { Dimensions } from "react-native";
+import { getChannels } from "../../api/channel";
+import Divider from "../../components/Utils/Divider";
+import TagList  from "../../components/Utils/TagList";
 
 const [width, height] = [Dimensions.get("window").width, Dimensions.get("window").height];
 const CreateTopic = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [tags , setTags] = useState([])
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const handleTagSelectionChange = (selectedTags) => {
+    // Handle the selection change. Maybe update a state or directly prepare the data for submission.
+    
+    setSelectedTags(selectedTags);
+    // If you have tag details like name or other info you need to submit, you can filter them here based on selectedTagIds.
+  };
 
   const handleSubmit = () => {
     const data = {
       topicName: title,
       content: content,
+      tags: selectedTags,
     };
      handlePostTopic(data);
-    
-    
      
   };
   
@@ -50,6 +61,14 @@ const CreateTopic = () => {
       console.log(error);
     }
   }
+  useEffect(() => {
+    const fetchChannels = async () => {
+      const res = await getChannels();
+      setTags(res);
+    };
+    fetchChannels();
+  }
+  , []);
 
 
   return (
@@ -60,14 +79,9 @@ const CreateTopic = () => {
       </SafeAreaView>
       <View style={styles.innerContainer}>
         <TitleInput title={title} setTitle={setTitle} />
-        <View
-          style={{
-            borderBottomColor: "#80c04e",
-            borderBottomWidth: 0.3,
-            width: width * 0.90,
-            marginBottom: 10,
-          }}
-        />
+        <Divider />
+        <TagList tags={tags} onSelectionChange={handleTagSelectionChange} />
+        <Divider />
         <ContentInput content={content} setContent={setContent} />
         <PostButton onPress={handleSubmit} />
       </View>

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import ContentListView from '../../../components/Screens/Content/ContentListView';
-import PostModalWrapper from '../../../components/Screens/Content/PostModalWrapper';
-import Header from '../../../components/Screens/Content/Header';
-import PostModal from '../../../components/Utils/PostModal';
-import { AuthContext } from '../../../context/AuthContext';
+import ContentListView from '../../../../components/Screens/Content/ContentListView';
+import PostModalWrapper from '../../../../components/Screens/Content/PostModalWrapper';
+import Header from '../../../../components/Screens/Content/Header';
+import PostModal from '../../../../components/Utils/PostModal';
+import { AuthContext } from '../../../../context/AuthContext';
 import { useContext } from 'react';
 
 export default function Index() {

@@ -1,68 +1,68 @@
-import React from 'react';
-import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getAllTopics } from "../../../api/api";
+import Footer from "../../../components/Screens/TrendingScreen/FooterComponent";
+import Header from "../../../components/Screens/TrendingScreen/Header";
+import TopicListView from "../../../components/Screens/TrendingScreen/TopicListView";
+import LogoutModalComponent from "../../../components/Screens/TrendingScreen/LogoutModalComponent";
+import {getChannels} from "../../../api/channel"
+import ChannelList from "../../../components/Utils/ChannelList";
 
 
-const ProfileScreen = () => {
-    // Dummy data for demonstration
-    const userInfo = {
-      profilePic: 'https://your-image-url.com/pic.jpg',
-      followersCount: 120,
-      followingCount: 75,
-      entriesCount: 90,
-      lastEntries: [
-        { id: '1', title: 'Entry 1', description: 'Description of Entry 1' },
-        { id: '2', title: 'Entry 2', description: 'Description of Entry 2' },
-        // Add more entries as needed
-      ],
+const height = Dimensions.get("window").height;
+const width = Dimensions.get("window").width;
+
+export default function HomePage() {
+
+  const [channels , setChannels] = useState([]);
+  const [isLogged, setIsLogged] = useState(false);
+  const [onRefresh, setRefresh] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const fetchChannels = async () => {
+      const res = await getChannels();
+      setChannels(res);
+      
     };
+    const checkLoginStatus = async () => {
+      const token = await AsyncStorage.getItem("userToken");
+      setIsLogged(token !== null);
+    };
+    fetchChannels();
+    checkLoginStatus();
+  }
+  , [onRefresh, isLogged]);
+  const handleRefresh = (done) => {
   
-    return (
-      <View style={styles.container}>
-        <View style={styles.profileInfoContainer}>
-          <Image source={{ uri: userInfo.profilePic }} style={styles.profilePic} />
-          <View style={styles.countersContainer}>
-            <Text>Followers: {userInfo.followersCount}</Text>
-            <Text>Following: {userInfo.followingCount}</Text>
-            <Text>Entries: {userInfo.entriesCount}</Text>
-          </View>
-        </View>
-        <FlatList
-          data={userInfo.lastEntries}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.entryContainer}>
-              <Text style={styles.entryTitle}>{item.title}</Text>
-              <Text>{item.description}</Text>
-            </View>
-          )}
-        />
-      </View>
-    );
+    setRefresh(!onRefresh); 
+    if(done) done();
   };
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
-    },
-    profileInfoContainer: {
-      flexDirection: 'row',
-      marginBottom: 20,
-    },
-    profilePic: {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
-    },
-    countersContainer: {
-      flex: 1,
-      justifyContent: 'space-around',
-      marginLeft: 20,
-    },
-    entryContainer: {
-      marginBottom: 10,
-    },
-    entryTitle: {
-      fontWeight: 'bold',
-    },
-  });
-  
+ 
+
+  return (
+    <View style={styles.container}>
+      <StatusBar style="light" />
+      <SafeAreaView style={styles.safeArea}>
+        <Header isLogged={isLogged} setModalVisible={setModalVisible} setRefresh={setRefresh} pageName={"Channels"}/>
+      </SafeAreaView>
+     <ChannelList channels={channels} path={"Channels"} />
+      <LogoutModalComponent modalVisible={modalVisible} setModalVisible={setModalVisible} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#191919",
+    height: height,
+    width: width,
+  },
+  safeArea: {
+    backgroundColor: "#191919",
+    marginBottom: -30,
+  },
+});
