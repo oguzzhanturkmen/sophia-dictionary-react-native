@@ -1,5 +1,6 @@
 # sophia-dictionary-react-native
-
+- **This app is not finished yet, but you can see some screenshots below :)
+- ** For the backend code (Java + SpringBoot) please go --> https://github.com/oguzzhanturkmen/sophia-dictionary
 
 
 
